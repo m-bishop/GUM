@@ -273,8 +273,6 @@ public class ItemBase extends Item {
 
         File file = new File(filename);
         StringBuilder description = new StringBuilder();
-        
-        
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
             	description.append(scanner.nextLine()+"\r\n");

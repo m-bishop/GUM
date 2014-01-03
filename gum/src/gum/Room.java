@@ -24,6 +24,8 @@ import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.*;
 
@@ -1051,15 +1053,16 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 		String menuString = "Configure Room:\r\n";
 		menuString += "(1) Configure Room Name \r\n";
 		menuString += "(2) Confifure Room Description \r\n";
-		menuString += "(3) Configure Room Filename \r\n";
-		menuString += "(4) Configure Exits \r\n";
-		menuString += "(5) Configure Mobs\r\n";
-		menuString += "(6) Configure Items \r\n";
-		menuString += "(7) Configure Actions \r\n";
-		menuString += "(8) Configure Respawn Timeout \r\n";
+		menuString += "(3) Load Room Description from file \r\n";
+		menuString += "(4) Configure Room Filename \r\n";
+		menuString += "(5) Configure Exits \r\n";
+		menuString += "(6) Configure Mobs\r\n";
+		menuString += "(7) Configure Items \r\n";
+		menuString += "(8) Configure Actions \r\n";
+		menuString += "(9) Configure Respawn Timeout \r\n";
 		menuString += "Choose from the above. Type 'exit' to exit the menu.\r\n";
 		// menuString += "(5) Configure Area Description \r\n";
-		PromptForInteger p = new PromptForInteger(u, menuString, 8, 1);
+		PromptForInteger p = new PromptForInteger(u, menuString, 9, 1);
 		while (p.display()) {
 			switch (p.getResult()) {
 			case 1:
@@ -1069,21 +1072,24 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 				configRoomDescription(u);
 				break;
 			case 3:
-				configRoomFilename(u);
+				configAddDescriptionFromFile(u);
 				break;
 			case 4:
+				configRoomFilename(u);
+				break;
+			case 5:
 				configRoomExits(u);
 				break;
-			case 5: 
+			case 6: 
 				configRoomMobs(u); 
 				break;
-			case 6: 
+			case 7: 
 				configRoomItems(u); 
 				break;
-			case 7: 
+			case 8: 
 				this.configActions(u);
 				break;
-			case 8:
+			case 9:
 				this.configRespawnTimeout(u);
 				if (respawnMinutes != 0){
 					this.respawnInit();
@@ -1094,6 +1100,37 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 		u.broadcast("\r\nExiting Room Configuration Menu.\r\n\r\n");
 	}
 
+	public void configAddDescriptionFromFile(User u) throws MenuExitException{
+		
+		String menuString =  "Enter a filename (Example: room_description.txt)\r\n";
+		       menuString += "GUM will try to locate the resource, and copy the desctiption to the Item.\r\n\r\n";
+		       
+		PromptForString s = new PromptForString(u, menuString);
+		boolean done = s.display();
+
+		if (done) {
+			  try {
+				this.loadDescriptionFromFile(s.getResult());
+				u.broadcast("Description Loaded.\r\n");
+			} catch (FileNotFoundException e) {
+				u.broadcast("File Not Found!\r\n");
+			}
+		}
+	}
+	
+    public void loadDescriptionFromFile(String filename) throws FileNotFoundException{
+
+        File file = new File(filename);
+        StringBuilder description = new StringBuilder();
+        
+        
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+            	description.append(scanner.nextLine()+"\r\n");
+            }
+            this.setDescription(description.toString());    
+    }
+	
     public boolean configRespawnTimeout(User u) throws MenuExitException{
     	String menuString = "Enter a new respawn timeout for this room.\r\n(example: '2' would be 'wait two minutes before respawning.)\r\n";
     	       menuString +="Current respawn timeout:"+this.getRespawnTimeout()+"\r\n";

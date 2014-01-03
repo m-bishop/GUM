@@ -74,6 +74,12 @@ public abstract class Action implements MenuContainer{
 		case BATTLE: //User performs action on each player in the battle.
 			performOnBattle();
 			break;
+		case ITEM:
+			break;
+		case TARGETITEM:
+			break;
+		default:
+			break;
 		}
 	}
 	
@@ -439,8 +445,9 @@ public abstract class Action implements MenuContainer{
 		menuString += "(05) Take \r\n";
 		menuString += "(06) Put \r\n";
 		menuString += "(07) More \r\n";
+		menuString += "(08) Description Editor \r\n";
 		menuString += "Choose from the above. Type 'exit' to return to the previous menu.\r\n";
-		PromptForInteger p = new PromptForInteger(u, menuString, 7, 1);
+		PromptForInteger p = new PromptForInteger(u, menuString, 8, 1);
 		if (p.display()) {
 			switch (p.getResult()) {
 			case 1:
@@ -463,6 +470,9 @@ public abstract class Action implements MenuContainer{
 				break;	
 			case 7: 
 				newAction = ObjectFactory.CreateAction("gum.actions.item.ActionItemMore");
+				break;
+			case 8:
+				newAction = ObjectFactory.CreateAction("gum.actions.item.ActionItemDescriptionEditor");
 				break;
 			}
 		}
