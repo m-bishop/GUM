@@ -72,6 +72,7 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 
 	public Room() {
 		filename = "DEFAULT";
+		name = "DEFAULT";
 		triggerActions.put("look", new ActionRoomLook());
 		// create a totally blank room.
 	}

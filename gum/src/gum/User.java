@@ -123,7 +123,7 @@ public class User extends Player implements MenuContainer{
 			oString = in.readLine();
 			System.out.println(oString);
 			oString = this.removeBackspace(oString);
-			oString = oString.replaceAll("[^a-zA-Z0-9 |\\/,`.?()-_'*!%]", "");
+			//oString = oString.replaceAll("[^a-zA-Z0-9 |\\/,`.?()-_'*!%]", "");
 			this.setTimeoutCounter(0);
 		} catch (IOException ex) {
 			this.quit();

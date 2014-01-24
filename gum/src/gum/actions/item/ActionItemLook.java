@@ -13,7 +13,7 @@ public class ActionItemLook extends Action {
 	public ActionItemLook(){
 		super();
 		this.setRange(EffectRange.USER);
-		this.setActionName("Notify");
+		this.setActionName("Look");
 	}
 
 	@Override

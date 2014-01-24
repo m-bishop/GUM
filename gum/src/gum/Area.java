@@ -7,10 +7,13 @@ import gum.menus.MenuExitException;
 import gum.menus.PromptForInteger;
 import gum.menus.PromptForString;
 
+import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Vector;
 
 public class Area implements MenuContainer{
@@ -115,7 +118,9 @@ public class Area implements MenuContainer{
     		   menuString += "(11) Load Area in Edit Mode. \r\n";
     		   menuString += "(12) Run current Area. \r\n";
     		   menuString += "(13) Save current Area\r\n";
-        PromptForInteger p = new PromptForInteger(u, menuString, 13, 1);
+    		   menuString += "(14) Save rooms by range.\r\n";
+    		   menuString += "(15) Load saved rooms.\r\n";
+        PromptForInteger p = new PromptForInteger(u, menuString, 15, 1);
         while (p.display() && !done){
         	switch (p.getResult()){
         		case 1:  done = configureImageDir(u); break;
@@ -131,9 +136,165 @@ public class Area implements MenuContainer{
         		case 11: configAreaLoad(u); break;
         		case 12: this.startAllMobs(); break;
         		case 13: configAreaSave(u); break;
+        		case 14: configAreaRoomsSave(u); break;
+        		case 15: configAreaRoomsLoad(u); break;
         	}
         }
         u.broadcast("Exiting Area Configuration.\r\n");
+    }
+    
+    public void configAreaRoomsSave(User u) throws MenuExitException{
+    	// May need to do more prep for save, like breaking connections with exits. the exit objects should be replaced with 
+    	// blank rooms with the filename of the room that it connects to, so that the 'load' function can use that to create
+    	// new links within new rooms. 
+    	
+    	String menuRoomSearchString = "All players in target rooms will be removed from the game!\r\n";
+    	menuRoomSearchString += "Enter 3 character search wildcard for rooms:";
+		String menuFileNameString = "Enter filename for save.\r\n\r\n";
+
+		Room currentRoom = null;
+		Vector<Room> roomsToSave = new Vector<Room>();
+		
+		PromptForString fileString = new PromptForString(u, menuFileNameString);
+		PromptForString searchString = new PromptForString(u, menuRoomSearchString);
+		
+		boolean done = searchString.display();
+		
+		if (done){
+			Iterator<Room> itr = rooms.iterator();
+			
+			while (itr.hasNext()){
+				currentRoom = itr.next();
+				if (currentRoom.getRoomFilename().startsWith(searchString.getResult())){
+					
+					//save filenames, so we can remove object references for save.
+					if (currentRoom.getNorthExit() != null){currentRoom.setNorthExit(currentRoom.getNorthRoom().getRoomFilename());}
+					if (currentRoom.getSouthExit() != null){currentRoom.setSouthExit(currentRoom.getSouthRoom().getRoomFilename());}
+					if (currentRoom.getEastExit() != null){currentRoom.setEastExit(currentRoom.getEastRoom().getRoomFilename());}
+					if (currentRoom.getWestExit() != null){currentRoom.setWestExit(currentRoom.getWestRoom().getRoomFilename());}
+					if (currentRoom.getUpExit() != null){currentRoom.setUpExit(currentRoom.getUpRoom().getRoomFilename());}
+					if (currentRoom.getDownExit() != null){currentRoom.setDownExit(currentRoom.getDownRoom().getRoomFilename());}
+					
+					//break object connections before saving. 
+					currentRoom.setNorthRoom(null);
+					currentRoom.setSouthRoom(null);
+					currentRoom.setEastRoom(null);
+					currentRoom.setWestRoom(null);
+					currentRoom.setUpRoom(null);
+					currentRoom.setDownRoom(null);
+					
+					roomsToSave.add(currentRoom);
+				}
+			}
+			
+			if (roomsToSave.size() > 0){
+			done = fileString.display();
+
+				if (done) {
+				
+					try{
+						FileOutputStream os = new FileOutputStream(fileString.getResult());
+						XMLEncoder encoder = new XMLEncoder(os);
+						encoder.writeObject(roomsToSave);
+						encoder.close();
+						u.broadcast("Rooms saved as:"+fileString.getResult());
+					} catch (Exception e){
+						e.printStackTrace();
+					}
+				} else {
+					u.broadcast("Rooms not saved. \r\n");
+				}
+			} else {
+				u.broadcast("Rooms not found.");
+			}
+		}   
+		Iterator<Room> itr = roomsToSave.iterator();
+		
+		while (itr.hasNext()){
+			//reconnect the objects.
+			
+			currentRoom = itr.next();
+		
+			currentRoom.setNorthRoom(this.getRoomByFilename(currentRoom.getNorthExit()));
+			currentRoom.setSouthRoom(this.getRoomByFilename(currentRoom.getSouthExit()));
+			currentRoom.setEastRoom(this.getRoomByFilename(currentRoom.getEastExit()));
+			currentRoom.setWestRoom(this.getRoomByFilename(currentRoom.getWestExit()));
+			currentRoom.setUpRoom(this.getRoomByFilename(currentRoom.getUpExit()));
+			currentRoom.setDownRoom(this.getRoomByFilename(currentRoom.getDownExit()));
+			
+		}
+    }
+    
+    public void configAreaRoomsLoad(User u) throws MenuExitException{
+    	// Method must take in a string to replace the prefix used to identify the rooms, so they will have 
+    	// unique filename within the system. 
+    	// when loading the new rooms, you will have to remember to re-link the exits to their proper rooms. 
+		String menuString = "Enter filename to Load.\r\n\r\n";
+		String fileName = "";
+	
+		PromptForString s = new PromptForString(u, menuString);
+		boolean done = s.display();
+
+		if (done) {
+			fileName = s.getResult();
+			u.broadcast("Loading Room File:"+fileName);
+			try{
+	    		FileInputStream is = new FileInputStream(fileName);
+	    		XMLDecoder decoder = new XMLDecoder(is);
+	    		
+	    		@SuppressWarnings("unchecked")
+				Vector<Room> roomsToLoad = (Vector<Room>)decoder.readObject();
+	    		decoder.close(); 
+	    		
+				Iterator<Room> itr = roomsToLoad.iterator();
+				
+				while (itr.hasNext()){
+					Room currentRoom = itr.next();
+					
+					currentRoom.setNorthRoom(this.getRoomByFilename(roomsToLoad, currentRoom.getNorthExit()));
+					currentRoom.setSouthRoom(this.getRoomByFilename(roomsToLoad, currentRoom.getSouthExit()));
+					currentRoom.setEastRoom(this.getRoomByFilename(roomsToLoad, currentRoom.getEastExit()));
+					currentRoom.setWestRoom(this.getRoomByFilename(roomsToLoad, currentRoom.getWestExit()));
+					currentRoom.setUpRoom(this.getRoomByFilename(roomsToLoad, currentRoom.getUpExit()));
+					currentRoom.setDownRoom(this.getRoomByFilename(roomsToLoad, currentRoom.getDownExit()));
+				}
+				
+				
+				menuString = "Enter 3 character prefix to replace:";
+				s = new PromptForString(u, menuString);
+				
+				if (s.display()){
+				
+					itr = roomsToLoad.iterator();
+				
+					while (itr.hasNext()){
+						Room currentRoom = itr.next();
+						currentRoom.setFilename(s.getResult()+currentRoom.getFilename().substring(3));
+					}
+					
+					itr = roomsToLoad.iterator();
+					
+					while (itr.hasNext()){
+						Room currentRoom = itr.next();
+
+						if (currentRoom.getNorthRoom() != null){currentRoom.setNorthExit(currentRoom.getNorthRoom().getRoomFilename());}
+						if (currentRoom.getSouthRoom() != null){currentRoom.setSouthExit(currentRoom.getSouthRoom().getRoomFilename());}
+						if (currentRoom.getEastRoom() != null){currentRoom.setEastExit(currentRoom.getEastRoom().getRoomFilename());}
+						if (currentRoom.getWestRoom() != null){currentRoom.setWestExit(currentRoom.getWestRoom().getRoomFilename());}
+						if (currentRoom.getUpRoom() != null){currentRoom.setUpExit(currentRoom.getUpRoom().getRoomFilename());}
+						if (currentRoom.getDownRoom() != null){currentRoom.setDownExit(currentRoom.getDownRoom().getRoomFilename());}
+					}
+					this.rooms.addAll(roomsToLoad);
+					u.broadcast("Rooms Loaded.\r\n");
+				}
+	    	}catch (Exception e){
+				e.printStackTrace();
+				u.broadcast("Error loading rooms file. Check filename and try again.\r\n");
+			}
+			
+		} else {
+			u.broadcast("Rooms not found. \r\n");
+		}
     }
     
 	public boolean configMissions(User u) throws MenuExitException {
@@ -557,6 +718,20 @@ public class Area implements MenuContainer{
     }
     
     public synchronized Room getRoomByFilename(String file){
+        boolean Found = false;
+        Room o_room = null;
+        Enumeration<Room> e = rooms.elements();
+         while (e.hasMoreElements() && !Found){
+             Room room = (Room)e.nextElement();
+             if (room.getRoomFilename().equals(file)){
+                 o_room = room;
+                 Found = true;
+             }
+        }
+        return o_room;
+    }
+    
+    public synchronized Room getRoomByFilename(Vector<Room> rooms, String file){
         boolean Found = false;
         Room o_room = null;
         Enumeration<Room> e = rooms.elements();
