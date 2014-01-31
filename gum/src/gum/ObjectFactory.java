@@ -84,7 +84,7 @@ public class ObjectFactory {
         }
         if (retObject == null){
         	try{
-        		System.out.println("Creating mob from class");
+        		System.out.println("Creating from class");
         		Class<?> classDefinition = Class.forName(fileName);
         		retObject = (Object) classDefinition.newInstance();  
         	}catch (Exception e){

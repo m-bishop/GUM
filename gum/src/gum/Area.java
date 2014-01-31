@@ -970,7 +970,7 @@ public class Area implements MenuContainer{
           //mobs save themselves for repop.
           // TODO finish room respawn code. 
           room.initialize();
-          room.initializeExits();
+          // room.initializeExits();
           // System.out.println(room.filename);
           // System.out.println(room.name);
           // System.out.println(room.description);

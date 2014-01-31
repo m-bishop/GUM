@@ -797,8 +797,8 @@ public abstract class Mob extends Player implements respawnable, MenuContainer{
     	
         if (item != null){
                 if (item.hold()) {
-                		if (leftHand != item){
-                			rightHand = item;
+                		if (this.getLeftHand() != item){
+                			this.setRightHand(item);
                 		} else{
                 			this.broadcast("You are already holding that!\r\n");
                 		}

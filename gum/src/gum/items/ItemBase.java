@@ -92,7 +92,7 @@ public class ItemBase extends Item {
     	this.getActions().put("take", takeAction);
     	this.getActions().put("put", new ActionItemPut());
     	this.getActions().put("drop", new ActionItemPut());
-    	this.getActions().put("look", new ActionItemLook());
+    	this.getActions().put("inspect", new ActionItemLook());
     	this.getActions().put("open", new ActionItemOpen());
     	this.getActions().put("close", new ActionItemClose());
     	this.getActions().put("hold", new ActionItemHold());

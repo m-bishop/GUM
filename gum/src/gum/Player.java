@@ -70,8 +70,8 @@ public abstract class Player extends Thread implements ItemContainer  {
         private boolean javascript;
 
         //containers
-        protected Item rightHand; // item in right hand
-        protected Item leftHand;  // item in left hand
+        private Item rightHnd; // item in right hand
+        private Item leftHand;  // item in left hand
         private Vector<Item> items = new Vector<Item>(); // all items
         private Vector<Drug> drugs = new Vector<Drug>(); // all drugs and poison effecting player
         private HashMap<String, Integer> settings = new HashMap<String, Integer>(); // setting map
@@ -217,6 +217,16 @@ public abstract class Player extends Thread implements ItemContainer  {
 		return command;
 	}
 
+	
+	
+	public Item getRightHand() {
+		return rightHnd;
+	}
+
+	public void setRightHand(Item rightHand) {
+		this.rightHnd = rightHand;
+	}
+
 	public int getSetting(String setting){
         Integer returnValue = null;
         returnValue = (Integer)settings.get(setting);
@@ -241,16 +251,10 @@ public abstract class Player extends Thread implements ItemContainer  {
     public void setPlayerName(String newName){
         playerName = newName;
     }
+    
 
-    public Item getRightHand(){
-        return rightHand;
-    }
-    
-    public void setRightHand(Item newItem){
-        rightHand = newItem;
-    }
-    
-    public Item getLeftHand(){
+
+	public Item getLeftHand(){
         return leftHand;
     }
     
@@ -378,8 +382,8 @@ public abstract class Player extends Thread implements ItemContainer  {
         
         	if ((playerRecieving != null)){
         		itemGiven.drop(this);
-        		if (rightHand == itemGiven) {
-        			rightHand = null;
+        		if (rightHnd == itemGiven) {
+        			rightHnd = null;
         		}
         		if (leftHand == itemGiven) {
         			leftHand = null;
@@ -531,7 +535,7 @@ public abstract class Player extends Thread implements ItemContainer  {
 
     public void stow(Item item){
         if (this.items.contains(item)){
-        	if ((rightHand == item || leftHand == item)){
+        	if ((rightHnd == item || leftHand == item)){
         		//items.removeElement(item);
         		//this.addToInventory(item);
         		if (this.getRightHand() == item) {
@@ -618,7 +622,7 @@ public abstract class Player extends Thread implements ItemContainer  {
         if (this.items.contains(item)){
                 if (item.hold()) {
                 		if (leftHand != item){
-                			rightHand = item;
+                			rightHnd = item;
                 		} else{
                 			this.broadcast("You are already holding that!\r\n");
                 		}
@@ -641,7 +645,7 @@ public abstract class Player extends Thread implements ItemContainer  {
         
         if (this.items.contains(item)){
                 if (item.hold()) {
-                		if (rightHand != item){
+                		if (rightHnd != item){
                 			leftHand = item;
                 		} else{
                 			this.broadcast("You are already holding that!\r\n");
@@ -668,8 +672,8 @@ public abstract class Player extends Thread implements ItemContainer  {
            outString = outString + currentItem.getItemName()+"\r\n";
 
         }
-        if (!(rightHand == null)){ // if the right hand isn't empty
-            outString = outString + "right hand:"+rightHand.getItemName()+"\r\n";
+        if (!(rightHnd == null)){ // if the right hand isn't empty
+            outString = outString + "right hand:"+rightHnd.getItemName()+"\r\n";
         }
         if (!(leftHand == null)){ // if the right hand isn't empty
             outString = outString + "left hand:"+leftHand.getItemName()+"\r\n";
