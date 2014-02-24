@@ -71,10 +71,15 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 	private Random random = ObjectFactory.getRandObject();
 
 	public Room() {
+		// create a totally blank room.
+	}
+	
+	public void init(){
 		filename = "DEFAULT";
 		name = "DEFAULT";
-		triggerActions.put("look", new ActionRoomLook());
-		// create a totally blank room.
+		ActionRoomLook lookAction = new ActionRoomLook();
+		lookAction.init();
+		triggerActions.put("look", lookAction);
 	}
 
 /*	public Room(String file) {
@@ -133,8 +138,11 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 
 	public Room(Room root, String exitDir) {
 		System.out.println("creating a new room");
-
-		triggerActions.put("look", new ActionRoomLook());
+		ActionRoomLook lookAction = new ActionRoomLook();
+		lookAction.init();
+		
+		
+		triggerActions.put("look", lookAction);
 		
 		if (exitDir.equalsIgnoreCase("north") || exitDir.equalsIgnoreCase("n")) {
 			this.northExit = root.getRoomFilename();
@@ -1802,6 +1810,7 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 				System.out.print("make room" + String.valueOf(i) + '-'
 						+ String.valueOf(j));
 				r = new Room();
+				r.init();
 				r.setRoomFilename("image/" + areaName + String.valueOf(i) + '-'
 						+ String.valueOf(j));
 				r.setDescription(areaName + String.valueOf(i) + '-'

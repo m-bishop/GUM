@@ -12,7 +12,11 @@ import java.util.Vector;
 public class ActionBuy extends ActionMerchant{
 
 	public ActionBuy(){
+	}
+	
+	public void init(){
 		this.setActionName("Buy");
+		this.setRange(EffectRange.USER);
 	}
 	
 	@Override

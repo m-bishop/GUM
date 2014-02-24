@@ -10,7 +10,10 @@ import gum.menus.PromptForInteger;
 public class ActionPlayerStats extends Action {
 	
 	public ActionPlayerStats(){
-		super();
+	}
+	
+	public void init(){
+		this.setActionName("Stats");
 		this.setRange(EffectRange.USER);
 	}
 

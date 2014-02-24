@@ -47,18 +47,21 @@ public class ObjectFactory {
     public static Item CreateItem(String fileName){
         Item oItem = null;
         oItem = (Item) createClass(fileName);
+        oItem.init();
         return oItem;
     }
     
     public static Mob CreateMob(String fileName){
     	Mob oMob = null;
     	oMob = (Mob) createClass(fileName);
+    	oMob.init();
     	return oMob;
     }
 
     public static Action CreateAction(String fileName){
     	Action oAction = null;
     	oAction = (Action) createClass(fileName);
+    	oAction.init();
     	return oAction;
     }
     

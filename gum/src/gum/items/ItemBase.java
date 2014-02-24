@@ -84,18 +84,35 @@ public class ItemBase extends Item {
     public Random random; // 
     private HashMap<String, Integer> settings = new HashMap<String, Integer>(); // setting map
 
-    public ItemBase() {
+    public ItemBase() {}
+        
+    public void init() {
     	currentAction = null;
     	ActionItemTake takeAction = new ActionItemTake();
+    	takeAction.init();
+    	ActionItemPut putAction = new ActionItemPut();
+    	putAction.init();
+    	ActionItemPut dropAction = new ActionItemPut();
+    	dropAction.init();
+    	ActionItemLook lookAction = new ActionItemLook();
+    	lookAction.init();
+    	ActionItemOpen openAction = new ActionItemOpen();
+    	openAction.init();
+    	ActionItemClose closeAction = new ActionItemClose();
+    	closeAction.init();
+    	ActionItemHold holdAction = new ActionItemHold();
+    	holdAction.init();
+    	
     	takeAction.setSuccessMessage("Taken\r\n");
     	takeAction.setFailMessage("You can't take that.\r\n");
     	this.getActions().put("take", takeAction);
-    	this.getActions().put("put", new ActionItemPut());
-    	this.getActions().put("drop", new ActionItemPut());
-    	this.getActions().put("inspect", new ActionItemLook());
-    	this.getActions().put("open", new ActionItemOpen());
-    	this.getActions().put("close", new ActionItemClose());
-    	this.getActions().put("hold", new ActionItemHold());
+    	this.getActions().put("put", putAction);
+    	this.getActions().put("drop", dropAction);
+    	this.getActions().put("inspect", lookAction);
+    	this.getActions().put("open", openAction);
+    	this.getActions().put("close", closeAction);
+    	this.getActions().put("hold", holdAction);
+    	
     }
     
     public void addToInventory(Item i){

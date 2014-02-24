@@ -11,7 +11,9 @@ import gum.menus.PromptForInteger;
 public class ActionPlayerMap extends Action {
 	
 	public ActionPlayerMap(){
-		super();
+	}
+	
+	public void init(){
 		this.setRange(EffectRange.USER);
 		this.setActionName("Map");
 	}

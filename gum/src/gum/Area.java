@@ -65,6 +65,7 @@ public class Area implements MenuContainer{
     		//pause game clock
     		//synchronized (World.getGameClock()){World.getGameClock().wait();}
 			Room newIndex = new Room();
+			newIndex.init();
 			this.setPaused(true);
 			this.prepForSave();
 			

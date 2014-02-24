@@ -11,8 +11,11 @@ import gum.menus.PromptForInteger;
 public class ActionItemClose extends Action {
 	
 	public ActionItemClose(){
-		super();
-		this.setRange(EffectRange.USER);
+	}
+	
+	public void init(){
+		this.setActionName("ItemClose");
+		this.setRange(EffectRange.USER);		
 	}
 
 	@Override

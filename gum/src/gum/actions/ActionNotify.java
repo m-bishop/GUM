@@ -14,10 +14,13 @@ public class ActionNotify extends Action {
 	int messageIndex = 0;
 	
 	
-	Vector<String> messages = new Vector<String>();
+	Vector<String> messages;
 
 	public ActionNotify(){
-		super();
+	}
+	
+	public void init(){
+		messages = new Vector<String>();
 		this.setRange(EffectRange.USER);
 		this.setActionName("Notify");
 	}

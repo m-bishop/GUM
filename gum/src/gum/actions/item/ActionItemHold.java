@@ -11,7 +11,10 @@ import gum.menus.PromptForInteger;
 public class ActionItemHold extends Action {
 	
 	public ActionItemHold(){
-		super();
+	}
+	
+	public void init(){
+		this.setActionName("ItemHold");
 		this.setRange(EffectRange.USER);
 	}
 

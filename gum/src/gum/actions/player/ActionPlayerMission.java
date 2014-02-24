@@ -9,10 +9,11 @@ import gum.menus.PromptForInteger;
 
 public class ActionPlayerMission extends Action {
 
-
-	
 	public ActionPlayerMission(){
-		super();
+	}
+	
+	public void init(){
+		this.setActionName("Mission");
 		this.setRange(EffectRange.USER);
 	}
 

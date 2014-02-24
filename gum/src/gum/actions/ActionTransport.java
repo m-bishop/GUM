@@ -10,10 +10,15 @@ import gum.menus.PromptForString;
 
 public class ActionTransport extends Action {
 	
-	private String targetRoom = "";
+	private String targetRoom;
 
 	public ActionTransport(){
+	}
+	
+	public void init(){
 		this.setActionName("Transport");
+		this.setRange(EffectRange.USER);
+		targetRoom = "";
 	}
 	
 	@Override

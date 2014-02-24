@@ -10,7 +10,10 @@ import gum.menus.PromptForInteger;
 public class ActionRoomLook extends Action {
 
 	public ActionRoomLook(){
-		super();
+	}
+	
+	public void init(){
+		this.setActionName("Look");
 		this.setRange(EffectRange.USER);
 	}
 

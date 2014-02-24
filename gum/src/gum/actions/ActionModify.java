@@ -13,14 +13,24 @@ import gum.menus.PromptForString;
 
 public class ActionModify extends Action {
 	
-	private int roll = 0;
-	private int base = 0;
-	private boolean broadcast = false;
-	private String modSetting = "";
-	private Operator operator = Operator.REPLACE;
+	private int roll;
+	private int base;
+	private boolean broadcast;
+	private String modSetting;
+	private Operator operator;
 	
 	public ActionModify(){
+	}
+	
+	public void init(){
 		this.setActionName("Modify");
+		this.setRange(EffectRange.USER);
+		roll = 0;
+		base = 0;
+		broadcast = false;
+		modSetting = "";
+		operator = Operator.REPLACE;		
+		
 	}
 	
 	public enum Operator {

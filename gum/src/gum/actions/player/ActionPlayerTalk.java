@@ -12,7 +12,10 @@ import java.util.StringTokenizer;
 public class ActionPlayerTalk extends Action{
 
 	public ActionPlayerTalk(){
-		super();
+	}
+	
+	public void init(){
+		this.setActionName("Talk");
 		this.setRange(EffectRange.USER);
 	}
 

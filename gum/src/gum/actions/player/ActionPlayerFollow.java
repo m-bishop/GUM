@@ -12,7 +12,10 @@ import java.util.StringTokenizer;
 public class ActionPlayerFollow extends Action {
 
 	public ActionPlayerFollow(){
-		super();
+	}
+	
+	public void init(){
+		this.setActionName("Follow");
 		this.setRange(EffectRange.USER);
 	}
 

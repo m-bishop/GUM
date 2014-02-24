@@ -11,10 +11,13 @@ import gum.menus.PromptForInteger;
 public class ActionItemOpen extends Action {
 	
 	public ActionItemOpen(){
-		super();
-		this.setRange(EffectRange.USER);
 	}
 
+	public void init(){
+		this.setActionName("open");
+		this.setRange(EffectRange.USER);
+	}
+	
 	@Override
 	public boolean doAction(ActionHeader header) {
 		Player player = header.getPlayer();

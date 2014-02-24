@@ -8,10 +8,15 @@ import gum.mobs.Mob;
 
 public class ActionSpawnMob extends Action {
 	
-	private Mob createdMob = null;
+	private Mob createdMob;
 	
 	public ActionSpawnMob(){
+	}
+	
+	public void init(){
 		this.setActionName("Spawn Mob");
+		this.setRange(EffectRange.USER);
+		createdMob = null;
 	}
 
 	@Override

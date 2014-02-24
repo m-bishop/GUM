@@ -18,13 +18,21 @@ import gum.menus.PromptForString;
 
 public class ActionCheck extends Action {
 
-	private int target = 0;
-	private String checkSetting = ""; 
-	private Condition condition = Condition.GREATER;
-	private HashMap<Integer,String> messages = new HashMap<Integer,String>();
+	private int target;
+	private String checkSetting; 
+	private Condition condition;
+	private HashMap<Integer,String> messages;
 
 	public ActionCheck(){
+	}
+	
+	public void init(){
 		this.setActionName("Check");
+		target = 0;
+		checkSetting = ""; 
+		condition = Condition.GREATER;
+		messages = new HashMap<Integer,String>();
+		this.setRange(EffectRange.USER);
 	}
 	
 	public enum Condition {

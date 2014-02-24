@@ -131,6 +131,14 @@ public abstract class Player extends Thread implements ItemContainer  {
         playerCommands.put("configure", new ActionPlayerConfig());
         playerCommands.put("map", new ActionPlayerMap());
         playerCommands.put("mail", new ActionPlayerMessages());
+
+        Iterator<Action> itr = playerCommands.values().iterator();
+        
+        while (itr.hasNext()){
+        	Action action = (Action) itr.next();
+        	action.init();
+        }
+
     }
     
     // process a 'tick'. 

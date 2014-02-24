@@ -9,9 +9,11 @@ import gum.menus.PromptForInteger;
 public class ActionDestroyItem extends Action {
 
 	public ActionDestroyItem() {
+	}
+	
+	public void init(){
 		this.setActionName("Destroy Item");
 		this.setRange(EffectRange.ITEM);
-		
 	}
 	
 	@Override

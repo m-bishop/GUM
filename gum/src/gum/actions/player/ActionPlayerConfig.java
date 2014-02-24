@@ -17,7 +17,10 @@ import java.util.StringTokenizer;
 public class ActionPlayerConfig extends Action {
 
 	public ActionPlayerConfig(){
-		super();
+	}
+	
+	public void init(){
+		this.setActionName("Config");
 		this.setRange(EffectRange.USER);
 	}
 

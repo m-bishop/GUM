@@ -14,13 +14,21 @@ import gum.menus.PromptForString;
 public class ActionMenu extends Action {
 
 	
-	private boolean actionPerformed = false; // are we currently performing this action?
-	private HashMap<String,Action> actions = new HashMap<String,Action>();
-	private String menuString = "";
-	private ActionHeader localHeader = null;
+	private boolean actionPerformed; // are we currently performing this action?
+	private HashMap<String,Action> actions;
+	private String menuString;
+	private ActionHeader localHeader;
 
 	public ActionMenu(){
+	}
+	
+	public void init(){
 		this.setActionName("Menu");
+		this.setRange(EffectRange.USER);
+		actionPerformed = false; // are we currently performing this action?
+		actions = new HashMap<String,Action>();
+		menuString = "";
+		localHeader = null;		
 	}
 	
 	@Override

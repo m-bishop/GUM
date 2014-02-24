@@ -10,7 +10,10 @@ import gum.menus.PromptForInteger;
 public class ActionPlayerQuit extends Action {
 
 	public ActionPlayerQuit(){
-		super();
+	}
+	
+	public void init(){
+		this.setActionName("Quit");
 		this.setRange(EffectRange.USER);
 	}
 

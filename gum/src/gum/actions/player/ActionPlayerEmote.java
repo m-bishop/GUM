@@ -12,7 +12,10 @@ import java.util.StringTokenizer;
 public class ActionPlayerEmote extends Action{
 
 	public ActionPlayerEmote(){
-		super();
+	}
+	
+	public void init(){
+		this.setActionName("Emote");
 		this.setRange(EffectRange.USER);
 	}
 

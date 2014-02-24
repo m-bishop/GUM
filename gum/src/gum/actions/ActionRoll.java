@@ -9,11 +9,17 @@ import gum.menus.PromptForString;
 
 public class ActionRoll extends Action {
 
-	private int target = 0;
-	private String setting = "";
+	private int target;
+	private String setting;
 	
 	public ActionRoll(){
+	}
+	
+	public void init(){
 		this.setActionName("Roll");
+		this.setRange(EffectRange.USER);
+		target = 0;
+		setting = "";		
 	}
 	
 	@Override

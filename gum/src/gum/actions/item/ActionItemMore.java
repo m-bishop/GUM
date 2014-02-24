@@ -17,14 +17,18 @@ import gum.menus.PromptForInteger;
 
 public class ActionItemMore extends Action {
 	
-	private boolean actionPerformed = false; // are we currently performing this action?
-	private ActionHeader localHeader = null;
+	private boolean actionPerformed; // are we currently performing this action?
+	private ActionHeader localHeader;
 	
 	
 	public ActionItemMore(){
-		super();
+	}
+	
+	public void init(){
 		this.setRange(EffectRange.USER);
 		this.setActionName("More");
+		actionPerformed = false; // are we currently performing this action?
+		localHeader = null;
 	}
 
 	@Override

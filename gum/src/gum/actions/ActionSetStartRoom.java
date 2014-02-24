@@ -6,6 +6,13 @@ import gum.menus.MenuExitException;
 import gum.menus.PromptForInteger;
 
 public class ActionSetStartRoom extends Action {
+	
+	public void ActionStartRoom(){};
+	
+	public void init(){
+		this.setActionName("SetStartRoom");
+		this.setRange(EffectRange.USER);
+	}
 
 	@Override
 	public boolean doAction(ActionHeader header) {

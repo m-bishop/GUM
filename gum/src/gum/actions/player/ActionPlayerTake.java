@@ -13,7 +13,10 @@ import gum.menus.PromptForInteger;
 public class ActionPlayerTake extends Action {
 	
 	public ActionPlayerTake(){
-		super();
+	}
+	
+	public void init(){
+		this.setActionName("Take");
 		this.setRange(EffectRange.USER);
 	}
 

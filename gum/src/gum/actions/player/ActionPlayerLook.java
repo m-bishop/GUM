@@ -13,7 +13,10 @@ import java.util.StringTokenizer;
 public class ActionPlayerLook extends Action {
 
 	public ActionPlayerLook(){
-		super();
+	}
+	
+	public void init(){
+		this.setActionName("Look");
 		this.setRange(EffectRange.USER);
 	}
 	

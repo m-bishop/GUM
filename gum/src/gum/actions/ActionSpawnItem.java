@@ -14,11 +14,15 @@ import gum.menus.PromptForInteger;
 
 public class ActionSpawnItem extends Action {
 
-	private Item createdItem = null;
+	private Item createdItem;
 	
 	public ActionSpawnItem(){
+	}
+	
+	public void init(){
 		this.setActionName("Spawn Item");
-		this.setRange(EffectRange.USER);
+		this.setRange(EffectRange.USER);	
+		createdItem = null;
 	}
 
 	@Override

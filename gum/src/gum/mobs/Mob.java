@@ -55,6 +55,10 @@ public abstract class Mob extends Player implements respawnable, MenuContainer{
     private HashMap<String,Action> actions = new HashMap<String,Action>();
 
     public Mob(){
+    	super();
+    }
+    
+    public void init(){
 
     	// TODO make this configurable. 
     	// Many of these should be overwritten later, but this is
@@ -63,7 +67,7 @@ public abstract class Mob extends Player implements respawnable, MenuContainer{
     	// that these settings exist for anyone taking part 
     	// in a battle. 
     	
-    	super();
+    	
     	this.script = "";
         this.setSetting("hitpoints",50); 
         this.setSetting("maxhp",50);

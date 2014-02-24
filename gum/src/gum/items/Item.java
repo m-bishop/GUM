@@ -23,10 +23,10 @@ import java.util.StringTokenizer;
  */
 abstract public class Item implements Cloneable, MenuContainer, ItemContainer{
 
-    public Item(){
+    public Item(){}
 
-    }
-
+    abstract public void init(); 
+    
     //consider breaking SimpleItem into SimpleDoor, simpleContainer, ect...
 
     //item's own parser, makes customizing items easier.

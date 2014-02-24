@@ -13,7 +13,10 @@ import java.util.StringTokenizer;
 public class ActionPlayerAttack extends Action {
 
 	public ActionPlayerAttack(){
-		super();
+	}
+	
+	public void init(){
+		this.setActionName("Attack");
 		this.setRange(EffectRange.USER);
 	}
 

@@ -14,7 +14,10 @@ public class ActionPlayerChat extends Action {
 
 	
 	public ActionPlayerChat(){
-		super();
+	}
+	
+	public void init(){
+		this.setActionName("Chat");
 		this.setRange(EffectRange.USER);
 	}
 

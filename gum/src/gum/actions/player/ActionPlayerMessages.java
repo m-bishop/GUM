@@ -19,7 +19,10 @@ public class ActionPlayerMessages extends Action {
 	private boolean actionPerformed = false;
 	
 	public ActionPlayerMessages(){
-		super();
+	}
+	
+	public void init(){
+		this.setActionName("Messages");
 		this.setRange(EffectRange.USER);
 	}
 	

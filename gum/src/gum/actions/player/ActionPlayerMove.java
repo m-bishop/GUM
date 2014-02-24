@@ -12,10 +12,11 @@ import java.util.StringTokenizer;
 
 public class ActionPlayerMove extends Action {
 
-
-		
 		public ActionPlayerMove(){
-			super();
+		}
+		
+		public void init(){
+			this.setActionName("Move");
 			this.setRange(EffectRange.USER);
 		}
 

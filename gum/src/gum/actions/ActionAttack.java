@@ -13,16 +13,26 @@ import gum.menus.PromptForString;
 
 public class ActionAttack extends Action {
 	
-	private String attackSetting = "dex";
-	private String defendSetting = "ref";
-	private int attackBase = 0;
-	private int attackRoll = 0;
-	private HashMap<Integer,String> attackMessage = new HashMap<Integer,String>();
+	private String attackSetting;
+	private String defendSetting;
+	private int attackBase;
+	private int attackRoll;
+	private HashMap<Integer,String> attackMessage;
 
 	public ActionAttack(){
-		this.setActionName("Attack");
+		
 	}
 
+	public void init(){
+		this.setActionName("Attack");
+		attackSetting = "dex";
+		defendSetting = "ref";
+		attackBase = 0;
+		attackRoll = 0;
+		attackMessage = new HashMap<Integer,String>();
+		this.setRange(EffectRange.TARGET);
+	}
+	
 	@Override
 	public boolean doAction(ActionHeader actionHeader){
 		Player player = actionHeader.getPlayer();

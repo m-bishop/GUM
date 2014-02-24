@@ -11,9 +11,11 @@ import gum.menus.PromptForInteger;
 public class ActionItemLook extends Action {
 	
 	public ActionItemLook(){
-		super();
+	}
+	
+	public void init(){
 		this.setRange(EffectRange.USER);
-		this.setActionName("Look");
+		this.setActionName("Look");		
 	}
 
 	@Override

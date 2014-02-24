@@ -11,8 +11,11 @@ import gum.menus.PromptForInteger;
 public class ActionItemTake extends Action {
 	
 	public ActionItemTake(){
-		super();
+	}
+	
+	public void init(){
 		this.setRange(EffectRange.USER);
+		this.setActionName("Take");
 	}
 
 	@Override

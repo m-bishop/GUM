@@ -20,17 +20,21 @@ import gum.menus.PromptForString;
 
 public class ActionItemDescriptionEditor extends Action {
 	
-	private boolean actionPerformed = false; // are we currently performing this action?
-	private ActionHeader localHeader = null;
-	private int lineCount = 0;
-	//private String lines[] = null;
-	private ArrayList<String> lines = new ArrayList<String>();
-	
+	private boolean actionPerformed ; // are we currently performing this action?
+	private ActionHeader localHeader;
+	private int lineCount;
+	private ArrayList<String> lines;
 	
 	public ActionItemDescriptionEditor(){
-		super();
+	}
+	
+	public void init(){
 		this.setRange(EffectRange.USER);
 		this.setActionName("DescriptionEditor");
+		actionPerformed = false; // are we currently performing this action?
+		localHeader = null;
+		lineCount = 0;
+		lines = new ArrayList<String>();
 	}
 
 	@Override

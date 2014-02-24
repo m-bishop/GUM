@@ -10,7 +10,10 @@ import gum.menus.PromptForInteger;
 public class ActionPlayerInventory extends Action {
 
 	public ActionPlayerInventory(){
-		super();
+	}
+	
+	public void init(){
+		this.setActionName("Inventory");
 		this.setRange(EffectRange.USER);
 	}
 

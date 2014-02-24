@@ -15,12 +15,19 @@ import gum.menus.PromptForString;
 
 public class ActionHeal extends Action {
 	
-	private int healBase = 0;
-	private int healRoll = 0;
-	private HashMap<Integer,String> healMessage = new HashMap<Integer,String>();
+	private int healBase;
+	private int healRoll;
+	private HashMap<Integer,String> healMessage;
 	
 	public ActionHeal(){
+	}
+	
+	public void init(){
 		this.setActionName("Heal");
+		healBase = 0;
+		healRoll = 0;
+		healMessage = new HashMap<Integer,String>();
+		this.setRange(EffectRange.TARGET);
 	}
 
 	@Override

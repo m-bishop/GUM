@@ -37,6 +37,8 @@ public abstract class Action implements MenuContainer{
 
 	public abstract boolean doAction(ActionHeader header);
 	
+	public abstract void init();
+	
 	public void perform(ActionHeader newHeader) {
 		header = newHeader; // this should be sent through each call, not global.
 		performByRange();
