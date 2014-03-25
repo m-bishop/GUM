@@ -72,6 +72,7 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 
 	public Room() {
 		// create a totally blank room.
+		 //init();
 	}
 	
 	public void init(){

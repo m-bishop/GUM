@@ -103,6 +103,8 @@ public abstract class Mob extends Player implements respawnable, MenuContainer{
     		ByteArrayInputStream is = new ByteArrayInputStream(respawnCopy);
     		XMLDecoder decoder = new XMLDecoder(is);
     		Mob newMob = (Mob)decoder.readObject();
+    		newMob.setRespawnCopy(respawnCopy);
+    		newMob.setRespawnRoom(this.getRespawnRoom());
     		this.getRespawnRoom().addPlayer((Mob)newMob);
     		newMob.start();
     		//this.dead = false;
