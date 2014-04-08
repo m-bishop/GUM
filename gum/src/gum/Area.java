@@ -945,9 +945,9 @@ public class Area implements MenuContainer{
                   try {
                       u = (User)p;
                       u.setTimeoutCounter(u.GetTimeoutCounter()+1);
-                      if ((u.GetTimeoutCounter()) > 5 && (u.getSetting("builder") != 1)){
-                          u.broadcast("Player has timed out (5 minute limit)\r\n");
-                          u.quit();
+                      if ((u.GetTimeoutCounter()) > 10){
+                          u.broadcast("Timed out (10 minute limit)\r\n");
+                          u.quit(); 
                       }
                   } catch (Exception eX){
                       // do nothing, we expect situations

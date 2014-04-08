@@ -698,7 +698,9 @@ public abstract class Player extends Thread implements ItemContainer  {
         maxHP = this.getSetting("maxhp");
         newHP = this.getSetting("hitpoints")+1;
         if (newHP < maxHP){
-            this.setSetting("hitpoints",(this.getSetting("hitpoints") + 1));
+        	// Todo make this a setting (room? Area?) so you can
+        	// make areas that heal. 
+            this.setSetting("hitpoints",(this.getSetting("hitpoints") + 0));
         }
         if (this.getSetting("stun") > 0){
             this.setSetting("stun",this.getSetting("stun")-1);

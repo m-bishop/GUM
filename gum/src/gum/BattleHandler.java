@@ -81,6 +81,7 @@ public class BattleHandler extends Thread {
 	}
 
 	public synchronized void addToBattle(Player newEnemy){
+		
 		if (newEnemy instanceof Mob){
 			mobs.add((Mob)newEnemy);
 		} else {
