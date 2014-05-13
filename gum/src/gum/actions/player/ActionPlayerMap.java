@@ -228,9 +228,9 @@ public class ActionPlayerMap extends Action {
 			}
 		}
 
-		if (result.length() > 8){
-			result = result.substring(0,8);
-		}
+//		if (result.length() > 8){
+//			result = result.substring(0,8);
+//		}
 		
 		if (result.length() < 8){
 			for (int i = 0;i < ((8-result.length())/2);i++){

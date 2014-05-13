@@ -1070,9 +1070,10 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 		menuString += "(7) Configure Items \r\n";
 		menuString += "(8) Configure Actions \r\n";
 		menuString += "(9) Configure Respawn Timeout \r\n";
+		menuString += "(10) Configure Room Settings \r\n";		
 		menuString += "Choose from the above. Type 'exit' to exit the menu.\r\n";
 		// menuString += "(5) Configure Area Description \r\n";
-		PromptForInteger p = new PromptForInteger(u, menuString, 9, 1);
+		PromptForInteger p = new PromptForInteger(u, menuString, 10, 1);
 		while (p.display()) {
 			switch (p.getResult()) {
 			case 1:
@@ -1105,6 +1106,7 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 					this.respawnInit();
 				}
 				break;
+			case 10: configItemSettings(u);break;
 			}
 		}
 		u.broadcast("\r\nExiting Room Configuration Menu.\r\n\r\n");
@@ -1127,6 +1129,63 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 			}
 		}
 	}
+	
+	public boolean configItemSettings(User u) throws MenuExitException{
+		boolean done = false;
+		int newSettingValue = 0;
+		String settingMenuString = "Current Settings:\r\n";
+		       settingMenuString += this.getSettingsAsString()+"\r\n";
+		
+		u.broadcast(settingMenuString);
+		
+		String newSettingName = getSettingName(u);
+		if (newSettingName.equals("")){
+			done = false;
+		} else {
+			newSettingValue = this.getSettingValue(u);
+			this.setSetting(newSettingName, newSettingValue);
+		}
+		
+		// create a list of settings for reference. 
+		// explain that setting to zero = removal. 
+		return done;
+	}
+	
+	public String getSettingsAsString(){
+        String settingString = "";
+
+        Iterator<String> e = settings.keySet().iterator();
+        while (e.hasNext()){
+            String key = (String) e.next();
+            settingString = settingString + key+","+settings.get(key)+";\r\n";
+        }
+        return settingString;
+    }
+	
+	public String getSettingName(User u) throws MenuExitException {
+		String result = "";
+		String menuString = "Enter a setting name.\r\n\r\n";
+		
+		PromptForString s = new PromptForString(u, menuString);
+		boolean done = s.display();
+
+		if (done) {
+			result = s.getResult();
+		} 
+		return result;
+	}	
+    
+    public int getSettingValue(User u) throws MenuExitException{
+    	int result = 0;
+    	String menuString = "Enter a new setting value (a value of zero will delete the setting).\r\n\r\n";
+    	       
+    	PromptForInteger i = new PromptForInteger(u,menuString);
+    	boolean done = i.display();
+    	if (done){
+    		result = (i.getResult());
+    	}
+    	return result;
+    } 
 	
     public void loadDescriptionFromFile(String filename) throws FileNotFoundException{
 
