@@ -467,7 +467,7 @@ public class ItemBase extends Item {
 		boolean done = s.display();
 
 		if (done) {
-			fileName = World.getArea().getLibDir()+"\\"+s.getResult();
+			fileName = World.getArea().getLibDir()+"//"+s.getResult();
 			this.save(fileName);
 			u.broadcast("Item saved as:"+fileName);
 		} else {

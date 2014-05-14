@@ -665,7 +665,7 @@ public abstract class Mob extends Player implements respawnable, MenuContainer{
 		boolean done = s.display();
 
 		if (done) {
-			fileName = World.getArea().getLibDir()+"\\"+s.getResult();
+			fileName = World.getArea().getLibDir()+"//"+s.getResult();
 			this.save(fileName);
 			u.broadcast("Mob saved as:"+fileName);
 		} else {

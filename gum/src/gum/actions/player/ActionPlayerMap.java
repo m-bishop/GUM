@@ -244,6 +244,15 @@ public class ActionPlayerMap extends Action {
 				result = result + " ";
 			}
 		}
+		if (room != null){
+			switch (room.getSetting("COLOR")) {
+				case 0: break;
+				case 1: result = "%GREEN " + result + " %SANE "; break;
+				case 2: result = "%YELLOW " + result + " %SANE "; break;
+				case 3: result = "%RED " + result + " %SANE "; break;
+				case 4: result = "%MAGENTA " + result + " %SANE "; break;
+			}
+		}
 		
 		return result;
 	}
