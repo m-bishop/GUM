@@ -191,21 +191,21 @@ public class ActionPlayerMap extends Action {
 		}
 		 
 		
-		p.broadcast("                                                                                ");		
-		p.broadcast("                                    "+northNorth+"                                    ");
-		p.broadcast("                                       "+nnArrow+"                                       ");
-		p.broadcast("                         "+northWest+nwArrow+north+neArrow+northEast+"                         ");
-		p.broadcast("                                       "+nArrow3+"                                       ");
-		p.broadcast("                     "+westNorth+"          "+nArrow2+"          "+eastNorth+"                     ");
-		p.broadcast("                        "+wnArrow+"             "+nArrow1+"             "+enArrow+"                        ");
-		p.broadcast("           "+westWest+wwArrow+west+wArrow+current+eArrow+east+eeArrow+eastEast+"           ");
-		p.broadcast("                        "+wsArrow+"             "+sArrow1+"             "+esArrow+"                        ");
-		p.broadcast("                     "+westSouth+"          "+sArrow2+"          "+eastSouth+"                     ");
-		p.broadcast("                                       "+sArrow3+"                                       ");
-		p.broadcast("                         "+southWest+swArrow+south+seArrow+southEast+"                         ");
-		p.broadcast("                                       "+ssArrow+"                                       ");
-		p.broadcast("                                    "+southSouth+"                                    ");
-		p.broadcast("                                                                                ");
+		p.broadcast("YOU ARE HERE: %MAGENTA * %SANE                                  MAP UTIL Ver 0.2");		
+		p.broadcast("                                  "+northNorth+"                                    ");
+		p.broadcast("                                     "+nnArrow+"                                       ");
+		p.broadcast("                       "+northWest+nwArrow+north+neArrow+northEast+"                         ");
+		p.broadcast("                                     "+nArrow3+"                                       ");
+		p.broadcast("                   "+westNorth+"          "+nArrow2+"          "+eastNorth+"                     ");
+		p.broadcast("                      "+wnArrow+"           %MAGENTA * %SANE "+nArrow1+"             "+enArrow+"                        ");
+		p.broadcast("         "+westWest+wwArrow+west+wArrow+current+eArrow+east+eeArrow+eastEast+"           ");
+		p.broadcast("                      "+wsArrow+"             "+sArrow1+"             "+esArrow+"                        ");
+		p.broadcast("                   "+westSouth+"          "+sArrow2+"          "+eastSouth+"                     ");
+		p.broadcast("                                     "+sArrow3+"                                       ");
+		p.broadcast("                       "+southWest+swArrow+south+seArrow+southEast+"                         ");
+		p.broadcast("                                     "+ssArrow+"                                       ");
+		p.broadcast("                                  "+southSouth+"                                    ");
+		p.broadcast("                                                                              ");
 	//	p.broadcast("                                                                                ");
 	//	p.broadcast("********************************************************************************");
 		
@@ -232,21 +232,21 @@ public class ActionPlayerMap extends Action {
 //			result = result.substring(0,8);
 //		}
 		
-		if (result.length() < 8){
-			for (int i = 0;i < ((8-result.length())/2);i++){
+		if (result.length() < 7){
+			for (int i = 0;i < ((7-result.length())/2);i++){
 				prepad = prepad+" ";
-				System.out.println(i+" compared to "+ ((8-result.length())/2));
+				System.out.println(i+" compared to "+ ((7-result.length())/2));
 			}
 			result = prepad+result;
 		}
-		if (result.length() < 8) {
-			while (result.length() < 8){
+		if (result.length() < 7) {
+			while (result.length() < 7){
 				result = result + " ";
 			}
 		}
 		if (room != null){
 			switch (room.getSetting("COLOR")) {
-				case 0: break;
+				case 0: result = result + " %SANE ";break;
 				case 1: result = "%GREEN " + result + " %SANE "; break;
 				case 2: result = "%YELLOW " + result + " %SANE "; break;
 				case 3: result = "%RED " + result + " %SANE "; break;

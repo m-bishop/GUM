@@ -38,7 +38,7 @@ public class OutputFilter {
 		utilReplaceMap.put("L_INTENS", "\u001B[2m");
 		utilReplaceMap.put("ITALIC", "\u001B[3m");
 		utilReplaceMap.put("UNDERLINE", "\u001B[4m");
-		utilReplaceMap.put("BLINK", "\u001B[5m");
+		utilReplaceMap.put("BLINK", "\u001b[5m");
 		utilReplaceMap.put("RAPID_BLINK", "\u001B[6m");
 		utilReplaceMap.put("REVERSE_VIDEO", "\u001B[7m");
 		utilReplaceMap.put("INVISIBLE_TEXT", "\u001B[8m");
