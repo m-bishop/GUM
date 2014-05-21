@@ -136,6 +136,7 @@ public class User extends Player implements MenuContainer{
 		// must be called from an outside thread!
 		String oString = "";
 
+		this.setTimeoutCounter(0);
 		System.out.println("In menu Response.\r\n");
 		synchronized (this) {
 			try {
@@ -256,6 +257,7 @@ try {
 				}
 			}
 		}
+		this.setTimeoutCounter(0);
 		return success;
 	}
 

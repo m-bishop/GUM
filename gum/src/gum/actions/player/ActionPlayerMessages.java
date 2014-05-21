@@ -40,9 +40,9 @@ public class ActionPlayerMessages extends Action {
 	}
 	
 	private void performMenu(User u) throws MenuExitException{
-		String menuString = "Configure Menu Action:\r\n";
-		menuString += "(01) Read Messages \r\n";
-		menuString += "(02) New Message\r\n";
+		String menuString = "Welcome to Mail:\r\n";
+		menuString += "(1) Read Messages \r\n";
+		menuString += "(2) New Message\r\n";
 		menuString += "Choose from the above. Type 'exit' to exit.\r\n";
 		
 		PromptForInteger p = new PromptForInteger(u, menuString, 2, 1);
@@ -181,7 +181,7 @@ public class ActionPlayerMessages extends Action {
 		String menuString = "Enter recipient user name.\r\n";
 		String fileName = null;
 		PromptForString s = null;
-		User recipient = null;
+		User recipient = new User();
 		
 		if (replyTo != null){
 			if (!replyTo.isEmpty()){
