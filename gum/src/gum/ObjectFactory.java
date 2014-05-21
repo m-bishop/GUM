@@ -76,7 +76,7 @@ public class ObjectFactory {
     	System.out.println("Creating object:"+fileName);
         try{
         	
-        	FileInputStream is = new FileInputStream(World.getArea().getLibDir()+"\\"+fileName);
+        	FileInputStream is = new FileInputStream(World.getArea().getLibDir()+"//"+fileName);
         	XMLDecoder decoder = new XMLDecoder(is);
         	retObject = (Object)decoder.readObject();
         	decoder.close(); 
