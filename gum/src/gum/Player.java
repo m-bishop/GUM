@@ -441,6 +441,7 @@ public abstract class Player extends Thread implements ItemContainer  {
         for (String skill : skillList){
 			broadcast("\t"+skill+"\t"+getSetting(skill)+"\r\n");
 		}
+        System.out.println(this.getSettings());
         broadcast("\r\n============================MISSIONS============================\r\n\r\n");
         HashMap<String,String> missions = World.getArea().getMissionMap();
         for (String m : missions.keySet()){

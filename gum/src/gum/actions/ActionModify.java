@@ -1,6 +1,9 @@
 package gum.actions;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Random;
+import java.util.Date;
 
 import gum.Player;
 import gum.Room;
@@ -17,6 +20,7 @@ public class ActionModify extends Action {
 	private int base;
 	private boolean broadcast;
 	private String modSetting;
+	private String baseSetting;
 	private Operator operator;
 	
 	public ActionModify(){
@@ -29,6 +33,7 @@ public class ActionModify extends Action {
 		base = 0;
 		broadcast = false;
 		modSetting = "";
+		baseSetting = "";
 		operator = Operator.REPLACE;		
 		
 	}
@@ -45,6 +50,7 @@ public class ActionModify extends Action {
 		Player player = header.getPlayer();
 		ItemBase item = header.getItem();
 		ItemBase targetItem = header.getTargetItem();
+		int bSetting = player.getSetting(baseSetting);
 		
 		switch (this.getRange()) {	
 		case TARGET: // in this case, the user performs the action on the target.
@@ -60,7 +66,7 @@ public class ActionModify extends Action {
 			break;
 		case ROOM: // Changes the room setting.
 			Room cRoom = player.getCurrentRoom();
-			int newRoomValue = this.getModifiedSetting(cRoom.getSetting(modSetting), base, player.roll(roll));
+			int newRoomValue = this.getModifiedSetting(cRoom.getSetting(modSetting),bSetting, base, player.roll(roll));
 			cRoom.setSetting(modSetting, newRoomValue);
 			player.broadcast(this.getSuccessMessage());
 			if (this.getSuccessAction() != null){
@@ -74,7 +80,7 @@ public class ActionModify extends Action {
 	    	if (roll > 0){
 	    		rolled = random.nextInt(roll)+1;
 	    	}
-			int newAreaValue = this.getModifiedSetting(cArea.getSetting(modSetting), base, rolled);
+			int newAreaValue = this.getModifiedSetting(cArea.getSetting(modSetting), bSetting, base, rolled);
 			cArea.setSetting(modSetting, newAreaValue);
 			if (player != null){// timed world actions have no player
 				player.broadcast(this.getSuccessMessage());
@@ -93,7 +99,7 @@ public class ActionModify extends Action {
 			performOnBattle();
 			break;
 		case ITEM: //User performs action on the Item.
-			int newItemValue = this.getModifiedSetting(target.getSetting(modSetting), base, player.roll(roll));
+			int newItemValue = this.getModifiedSetting(target.getSetting(modSetting), bSetting, base, player.roll(roll));
 			item.setSetting(modSetting, newItemValue);
 			player.broadcast(this.getSuccessMessage());
 			if (this.getSuccessAction() != null){
@@ -104,7 +110,7 @@ public class ActionModify extends Action {
 			if (targetItem == null){
 				player.broadcast("What do you want to do this to? Example: 'Use my key on the door'\r\n");
 			}else {
-				int newTargetItemValue = this.getModifiedSetting(targetItem.getSetting(modSetting), base, player.roll(roll));
+				int newTargetItemValue = this.getModifiedSetting(targetItem.getSetting(modSetting), bSetting,base, player.roll(roll));
 				targetItem.setSetting(modSetting, newTargetItemValue);
 				player.broadcast(this.getSuccessMessage());
 				if (this.getSuccessAction() != null){
@@ -117,20 +123,21 @@ public class ActionModify extends Action {
 	}
 	
 	
-	public int getModifiedSetting(int settingValue, int base, int roll){
+	public int getModifiedSetting(int settingValue,int baseSetting, int base, int roll){
 		int result = 0;
 		switch (this.operator) {
 		case ADD: 
-			result = settingValue + (base+roll);
+			result = settingValue + (baseSetting+base+roll);
 			break;
 		case SUBTRACT: 
-			result = settingValue - (base+roll);
+			result = settingValue - (baseSetting+base+roll);
 			break;
 		case REPLACE: 
-			result = base+roll;
+			result = baseSetting+base+roll;
 			break;
 		
 		}
+		System.out.println("ActionModify>>getModifiedSetting:Setting:"+baseSetting+" base:"+base+" roll:"+roll+" result:"+result);
 		return result;
 	}
 	
@@ -138,10 +145,23 @@ public class ActionModify extends Action {
 	public boolean doAction(ActionHeader actionHeader) {
 		Player target = actionHeader.getTargetPlayer();
 		int rolled = target.roll(roll);
+		int bSetting = 0;
+				
+		if (baseSetting.equalsIgnoreCase("*today")){
+			DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+			Date date = new Date();
+			bSetting = Integer.valueOf(dateFormat.format(date));
+		}
+		else {
+			bSetting = target.getSetting(baseSetting);
+		}
+		
+		System.out.println("ActionModify>>doAction: bSetting:<name>"+baseSetting+"bSetting<value>:"+bSetting);
+		
 		if (this.broadcast){
 			target.getCurrentRoom().chat(target.getPlayerName()+" rolled "+rolled+" on a "+this.getRoll()+" sided die.\r\n");
 		}
-		int newValue = this.getModifiedSetting(target.getSetting(modSetting), base,rolled );
+		int newValue = this.getModifiedSetting(target.getSetting(modSetting),bSetting, base,rolled );
 		target.setSetting(modSetting, newValue);
 		target.broadcast(this.getSuccessMessage());
 		return true;
@@ -151,61 +171,81 @@ public class ActionModify extends Action {
 	public void menu(User u) throws MenuExitException {
 		String menuString = "Configure Modify Action:\r\n";
 		menuString += "(01) Configure name \r\n";
-		menuString += "(02) Configure base (Item base damage)+(BASE+(1->roll) = damage) \r\n";
-		menuString += "(03) Configure roll (Item base damage)+(base+(1->ROLL) = damage)\r\n";
-		menuString += "(04) Configure setting to be modified \r\n";
-		menuString += "(05) Configure modification operator (Add, Subtract, Replace) \r\n";
-		menuString += "(06) Configure prereq setting\r\n";
-		menuString += "(07) Configure range \r\n";
-		menuString += "(08) Configure result broadcast flag \r\n";
-		menuString += "(09) Configure success action \r\n";
-		menuString += "(10) Configure success message\r\n";
-		menuString += "(11) Display structure \r\n";
-		menuString += "(12) Save \r\n";
+		menuString += "(02) Configure base setting (Base setting)+(Item base damage)+(BASE+(1->roll) = damage) \r\n";
+		menuString += "(03) Configure base (Base setting)+(Item base damage)+(BASE+(1->roll) = damage) \r\n";
+		menuString += "(04) Configure roll (Base setting)+(Item base damage)+(base+(1->ROLL) = damage)\r\n";
+		menuString += "(05) Configure setting to be modified \r\n";
+		menuString += "(06) Configure modification operator (Add, Subtract, Replace) \r\n";
+		menuString += "(07) Configure prereq setting\r\n";
+		menuString += "(08) Configure range \r\n";
+		menuString += "(09) Configure result broadcast flag \r\n";
+		menuString += "(10) Configure success action \r\n";
+		menuString += "(11) Configure success message\r\n";
+		menuString += "(12) Display structure \r\n";
+		menuString += "(13) Save \r\n";
 		menuString += "Choose from the above. Type 'exit' to exit the menu.\r\n";
 		
-		PromptForInteger p = new PromptForInteger(u, menuString, 12, 1);
+		PromptForInteger p = new PromptForInteger(u, menuString, 13, 1);
 		while (p.display()) {
 			switch (p.getResult()) {
 			case 1:
 				this.configActionName(u);
 				break;
-			case 2:
+			case 2: 
+				this.configBaseSetting(u);
+				break;
+			case 3:
 				this.configBase(u);
 				break;				
-			case 3:
+			case 4:
 				this.configRoll(u);
 				break;
-			case 4:
+			case 5:
 				this.configModSetting(u);
 				break;
-			case 5:
+			case 6:
 				this.configOperator(u);
 				break;
-			case 6:
+			case 7:
 				this.configActionPrereqSetting(u);
 				break;
-			case 7:
+			case 8:
 				this.configActionRange(u);
 				break;
-			case 8:
+			case 9:
 				this.configBroadcastFlag(u);
 				break;
-			case 9:
+			case 10:
 				this.configSuccessAction(u);
 				break;
-			case 10: 
+			case 11: 
 				this.configActionSuccessMessage(u);
 				break;
-			case 11:
+			case 12:
 				u.broadcast(this.getStructure());
 				break;
-			case 12: 
+			case 13: 
 				this.configActionSave(u);
 				break;
 			}
 		}
 		u.broadcast("\r\nExiting Modify Configuration Menu.\r\n\r\n");	
+	}
+	
+	public void configBaseSetting(User u) throws MenuExitException{
+
+		String settingMenuString =  "This will configure the base setting to be used by this action.\r\n";
+			   settingMenuString += "the new setting will be equal to the THIS+Base + (1->Roll).\r\n";
+		       settingMenuString += "Currently this Action's base setting is:"+this.baseSetting+"\r\n";
+		       settingMenuString += "Enter '*today', and zero for base and roll, to set to today's date. \r\n";
+		       settingMenuString += "Enter a new setting:\r\n";
+		
+		u.broadcast(settingMenuString);
+		
+		String newSettingName = getSettingName(u);
+		if (!newSettingName.equals("")){
+			this.baseSetting = newSettingName;
+		}
 	}
 	
 	public void configBroadcastFlag(User u) throws MenuExitException{
@@ -304,6 +344,14 @@ public class ActionModify extends Action {
 		this.roll = roll;
 	}
 
+	public String getBaseSetting() {
+		return baseSetting;
+	}
+
+	public void setBaseSetting(String baseSetting) {
+		this.baseSetting = baseSetting;
+	}
+	
 	public int getBase() {
 		return base;
 	}
