@@ -1,7 +1,10 @@
 package gum.actions;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -19,6 +22,7 @@ import gum.menus.PromptForString;
 public class ActionCheck extends Action {
 
 	private int target;
+	private String targetSetting;
 	private String checkSetting; 
 	private Condition condition;
 	private HashMap<Integer,String> messages;
@@ -41,10 +45,16 @@ public class ActionCheck extends Action {
 	
 	@Override
 	public void performByRange(){
+		// TODO just rewrite this ... 
+		// This whole mess needs rewritten. Most of it could be cleaned up by defining an interface for everything that has settings, 
+		// so that you could abstract the checks against different things that have settings. No more Area, Item, etc needing their 
+		// own little pieces of code to process, just have any target require the interface that targets have settings and write it once. 
+		
 		Player player = this.getHeader().getPlayer();
 		Player target = this.getHeader().getTargetPlayer();
 		ItemBase item = this.getHeader().getItem();
 		ItemBase targetItem = this.getHeader().getTargetItem();
+		int tSetting;
 		
 		switch (this.getRange()) {	
 		case TARGET: // in this case, the user performs the action on the target.
@@ -60,11 +70,32 @@ public class ActionCheck extends Action {
 			break;
 		case ROOM: // Changes the room setting.
 			Room cRoom = this.getHeader().getPlayer().getCurrentRoom();
-			this.performCheck(player, target, item, targetItem, cRoom.getSetting(checkSetting));
+			
+			if (targetSetting.equalsIgnoreCase("*today")){
+				DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+				Date date = new Date();
+				tSetting = Integer.valueOf(dateFormat.format(date));
+				tSetting = tSetting+this.target;
+			}
+			else {
+				tSetting = (cRoom.getSetting(targetSetting))+this.target;
+			}
+			this.performCheck(player, target, item, targetItem, cRoom.getSetting(checkSetting), tSetting);
 			break;
 		case WORLD: // Changes the world setting.
 			gum.Area cArea = World.getArea();
-			this.performCheck(player, target, item, targetItem, cArea.getSetting(checkSetting));
+			
+			if (targetSetting.equalsIgnoreCase("*today")){
+				DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+				Date date = new Date();
+				tSetting = Integer.valueOf(dateFormat.format(date));
+				tSetting = tSetting+this.target;
+			}
+			else {
+				tSetting = (cArea.getSetting(targetSetting))+this.target;
+			}
+			
+			this.performCheck(player, target, item, targetItem, cArea.getSetting(checkSetting), tSetting);
 			break;
 		case ENEMIES: //User performs action on each mob in the room.
 			performOnEnemies();
@@ -76,13 +107,31 @@ public class ActionCheck extends Action {
 			performOnBattle();
 			break;
 		case ITEM: //User performs action on the Item.	
-			this.performCheck(player, target, item, targetItem, item.getSetting(checkSetting));
+			if (targetSetting.equalsIgnoreCase("*today")){
+				DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+				Date date = new Date();
+				tSetting = Integer.valueOf(dateFormat.format(date));
+				tSetting = tSetting+this.target;
+			}
+			else {
+				tSetting = (item.getSetting(targetSetting))+this.target;
+			}
+			this.performCheck(player, target, item, targetItem, item.getSetting(checkSetting),tSetting);
 			break;
 		case TARGETITEM: // User performs action on target Item
 			if (targetItem == null){
 				player.broadcast("What do you want to do this to? Example: 'Use my key on the door'\r\n");
 			}else {
-				this.performCheck(player, target, item, targetItem, targetItem.getSetting(checkSetting));
+				if (targetSetting.equalsIgnoreCase("*today")){
+					DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+					Date date = new Date();
+					tSetting = Integer.valueOf(dateFormat.format(date));
+					tSetting = tSetting+this.target;
+				}
+				else {
+					tSetting = (targetItem.getSetting(targetSetting))+this.target;
+				}
+				this.performCheck(player, target, item, targetItem, targetItem.getSetting(checkSetting),tSetting);
 			}
 			break;
 		}
@@ -90,8 +139,8 @@ public class ActionCheck extends Action {
 	//TODO remember to clean up these methods that don't use the 'header' info
 	// When this was written, it used the four seperate variables. Now those are
 	// contained in the ActionHeader. 
-	public void performCheck(Player player, Player target, ItemBase item, ItemBase targetItem,int settingValue){
-		if (this.getCompareResult(settingValue)){
+	public void performCheck(Player player, Player target, ItemBase item, ItemBase targetItem,int settingValue,int targetValue){
+		if (this.getCompareResult(settingValue,targetValue)){
 			if (this.getSuccessAction() != null){
 				System.out.println("Actioncheck called success action:"+this.getSuccessAction().getActionName());
 				this.getSuccessAction().perform(this.getHeader());
@@ -113,7 +162,19 @@ public class ActionCheck extends Action {
 		ItemBase item = actionHeader.getItem();
 		
 		int settingValue = target.getSetting(checkSetting);
-		boolean result = getCompareResult(settingValue);
+		int tSetting;
+		
+		if (targetSetting.equalsIgnoreCase("*today")){
+			DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+			Date date = new Date();
+			tSetting = Integer.valueOf(dateFormat.format(date));
+			tSetting = tSetting+this.target;
+		}
+		else {
+			tSetting = (target.getSetting(targetSetting))+this.target;
+		}
+		
+		boolean result = getCompareResult(settingValue,tSetting);
 		player.broadcast(this.getClosestMessage(settingValue, player, target, item));
 		return result;
 	}
@@ -123,18 +184,19 @@ public class ActionCheck extends Action {
 		String menuString = "Configure Check Action:\r\n";
 		menuString += "(01) Configure name \r\n";
 		menuString += "(02) Configure setting to be checked \r\n";
-		menuString += "(03) Config target to be checked against \r\n";
-		menuString += "(04) Configure condition (Greater,Less,Equal,ect) \r\n";
-		menuString += "(05) Configure prereq setting\r\n";
-		menuString += "(06) Configure range \r\n";
-		menuString += "(07) Configure success action \r\n";
-		menuString += "(08) Configure failure action \r\n";
-		menuString += "(09) Configure messages\r\n";
-		menuString += "(10) Display structure \r\n";
-		menuString += "(11) save \r\n";
+		menuString += "(03) Configure setting to be checked against (will be added to static target) \r\n";
+		menuString += "(04) Configure target to be checked against (will be added to setting target)\r\n";
+		menuString += "(05) Configure condition (Greater,Less,Equal,ect) \r\n";
+		menuString += "(06) Configure prereq setting\r\n";
+		menuString += "(07) Configure range \r\n";
+		menuString += "(08) Configure success action \r\n";
+		menuString += "(09) Configure failure action \r\n";
+		menuString += "(10) Configure messages\r\n";
+		menuString += "(11) Display structure \r\n";
+		menuString += "(12) save \r\n";
 		menuString += "Choose from the above. Type 'exit' to exit the menu.\r\n";
 		
-		PromptForInteger p = new PromptForInteger(u, menuString, 11, 1);
+		PromptForInteger p = new PromptForInteger(u, menuString, 12, 1);
 		while (p.display()) {
 			switch (p.getResult()) {
 			case 1:
@@ -144,30 +206,33 @@ public class ActionCheck extends Action {
 				this.configCheckSetting(u);
 				break;
 			case 3:
-				this.configTarget(u);
+				this.configTargetSetting(u);
 				break;
 			case 4:
-				this.configCondition(u);
+				this.configTarget(u);
 				break;
 			case 5:
-				this.configActionPrereqSetting(u);
+				this.configCondition(u);
 				break;
 			case 6:
-				this.configActionRange(u);
+				this.configActionPrereqSetting(u);
 				break;
 			case 7:
-				this.configSuccessAction(u);
+				this.configActionRange(u);
 				break;
 			case 8:
+				this.configSuccessAction(u);
+				break;
+			case 9:
 				this.configFailureAction(u);
 				break;
-			case 9: 
+			case 10: 
 				this.configMessages(u);
 				break;
-			case 10:
+			case 11:
 				u.broadcast(this.getStructure());
 				break;
-			case 11: 
+			case 12: 
 				this.configActionSave(u);
 				break;
 			}
@@ -175,6 +240,21 @@ public class ActionCheck extends Action {
 		u.broadcast("\r\nExiting Check Configuration Menu.\r\n\r\n");	
 	}
 
+	public void configTargetSetting(User u) throws MenuExitException{
+
+		String settingMenuString =  "This will configure the target setting to be used by this action.\r\n";
+			   settingMenuString += "the setting to be checked will be equal to the THIS+static target .\r\n";
+		       settingMenuString += "Currently this Action's target setting is:"+this.targetSetting+"\r\n";
+		       settingMenuString += "Enter '*today', and zero for a static target to check against today's date. \r\n";
+		
+		u.broadcast(settingMenuString);
+		
+		String newSettingName = getSettingName(u);
+		if (!newSettingName.equals("")){
+			this.targetSetting = newSettingName;
+		}
+	}
+	
 	public void configCheckSetting(User u) throws MenuExitException{
 
 		String settingMenuString =  "This will configure a setting to be checked by this action.\r\n";
@@ -239,8 +319,9 @@ public class ActionCheck extends Action {
 		}
 	}
 
-	public boolean getCompareResult(int settingValue){
+	public boolean getCompareResult(int settingValue, int target){
 		boolean result = false;
+		
 		switch (this.condition) {
 		case EQUAL: 
 			result = settingValue == target;
@@ -417,6 +498,14 @@ public class ActionCheck extends Action {
 
 	public void setTarget(int target) {
 		this.target = target;
+	}
+
+	public String getTargetSetting() {
+		return targetSetting;
+	}
+
+	public void setTargetSetting(String targetSetting) {
+		this.targetSetting = targetSetting;
 	}
 
 	public HashMap<Integer, String> getMessages() {

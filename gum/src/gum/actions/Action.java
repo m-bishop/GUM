@@ -654,7 +654,7 @@ public abstract class Action implements MenuContainer{
 	
 	public String getSettingName(User u) throws MenuExitException {
 		String result = "";
-		String menuString = "Enter a setting name.\r\n\r\n";
+		String menuString = "Enter a setting name:\r\n\r\n";
 		
 		PromptForString s = new PromptForString(u, menuString);
 		boolean done = s.display();
@@ -667,7 +667,7 @@ public abstract class Action implements MenuContainer{
     
     public int getSettingValue(User u) throws MenuExitException{
     	int result = 0;
-    	String menuString = "Enter a new setting value.\r\n\r\n";
+    	String menuString = "Enter a new setting value:\r\n\r\n";
     	       
     	PromptForInteger i = new PromptForInteger(u,menuString);
     	boolean done = i.display();
