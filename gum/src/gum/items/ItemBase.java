@@ -547,8 +547,9 @@ public class ItemBase extends Item {
 		menuString += "(1) Configure existing actions. \r\n";
 		menuString += "(2) Add a new action. \r\n";
 		menuString += "(3) Remove an action. \r\n";
+		menuString += "(4) Change an action's verb. \r\n";
 		menuString += "Choose from the above. Type 'exit' to return to the previous menu.\r\n";
-		PromptForInteger p = new PromptForInteger(u, menuString, 3, 1);
+		PromptForInteger p = new PromptForInteger(u, menuString, 4, 1);
 		while (p.display()) {
 			switch (p.getResult()) {
 			case 1:
@@ -560,10 +561,50 @@ public class ItemBase extends Item {
 			case 3: 
 				this.configRemoveAction(u); 
 				break;
+			case 4:
+				this.configModifyVerb(u);
+				break;
 			}
 		}
 		return done;
 	}	
+	
+	public void configModifyVerb(User u) throws MenuExitException{
+		String menuString =  "Enter an action from the list below to change it's verb.\r\n";
+		int count = 0;
+		Action renamedAction = null;
+		String renamedVerb = null;
+		ArrayList<String> keys = new ArrayList<String>(this.actions.keySet());
+		Collections.sort(keys);
+		
+		for (String s : keys){
+			menuString += "("+count+") "+s+"\r\n";
+			count++;
+		}
+	       
+	       PromptForInteger p = new PromptForInteger(u, menuString, 100, 0);
+	       if (p.display()){   
+	    	   renamedVerb = keys.get(p.getResult());
+	    	   renamedAction = actions.remove(keys.get(p.getResult()));
+	    	   if ( renamedAction != null){
+			       menuString += "New verb:";
+			       PromptForString s = new PromptForString(u, menuString);
+
+			       if (s.display()) {
+			    	   this.actions.put(s.getResult(), renamedAction);
+			    	   u.broadcast("Verb changed.");
+			       } else {
+			    	   this.actions.put(renamedVerb, renamedAction); // put the action back on failure. 
+			    	   u.broadcast("Verb not changed \r\n");
+			       }
+	    		   
+	    	   }else {
+	    		   u.broadcast("Action not found.\r\n");
+	    	   }
+	       } else {
+	    	   u.broadcast("Actions unchanged.\r\n");
+	       }
+	}
 	
 	public void configActionAdd(User u) throws MenuExitException{
 		String menuString =  "This will allow you to add a verb to the item, and associate it with an action. \r\n";
