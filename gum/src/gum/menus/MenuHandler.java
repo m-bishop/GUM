@@ -19,6 +19,7 @@ public class MenuHandler extends Thread {
 		}catch (MenuExitException e){
 			user.broadcast("Exiting Menu\r\n");
 		}catch (Exception e){
+			e.printStackTrace();
 			user.broadcast("Error in Menu\r\n");
 		}
 	}

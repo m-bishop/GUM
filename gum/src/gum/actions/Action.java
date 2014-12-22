@@ -493,15 +493,16 @@ public abstract class Action implements MenuContainer{
 		menuString += "(04) Roll \r\n";
 		menuString += "(05) Check \r\n";
 		menuString += "(06) Check Description \r\n";
-		menuString += "(07) Modify \r\n";
-		menuString += "(08) Transport \r\n";
-		menuString += "(09) Spawn Mob \r\n";
-		menuString += "(10) Spawn Item \r\n";
-		menuString += "(11) Destroy Item \r\n";
-		menuString += "(12) Menu  \r\n";
-		menuString += "(13) Buy  \r\n";
-		menuString += "(14) Sell  \r\n";
-		menuString += "(15) Set Start Room \r\n";
+		menuString += "(07) Check Prompt \r\n";
+		menuString += "(08) Modify \r\n";
+		menuString += "(09) Transport \r\n";
+		menuString += "(10) Spawn Mob \r\n";
+		menuString += "(11) Spawn Item \r\n";
+		menuString += "(12) Destroy Item \r\n";
+		menuString += "(13) Menu  \r\n";
+		menuString += "(14) Buy  \r\n";
+		menuString += "(15) Sell  \r\n";
+		menuString += "(16) Set Start Room \r\n";
 		menuString += "Choose from the above. Type 'exit' to return to the previous menu.\r\n";
 		PromptForInteger p = new PromptForInteger(u, menuString, 15, 1);
 		if (p.display()) {
@@ -523,32 +524,35 @@ public abstract class Action implements MenuContainer{
 				break;
 			case 6: 
 				newAction = ObjectFactory.CreateAction("gum.actions.ActionCheckDescription");
-				break;				
+				break;	
 			case 7: 
+				newAction = ObjectFactory.CreateAction("gum.actions.ActionCheckPrompt");
+				break;
+			case 8: 
 				newAction = ObjectFactory.CreateAction("gum.actions.ActionModify");
 				break;	
-			case 8: 
+			case 9: 
 				newAction = ObjectFactory.CreateAction("gum.actions.ActionTransport");
 				break;
-			case 9: 
+			case 10: 
 				newAction = ObjectFactory.CreateAction("gum.actions.ActionSpawnMob");
 				break;
-			case 10: 
+			case 11: 
 				newAction = ObjectFactory.CreateAction("gum.actions.ActionSpawnItem");
 				break;
-			case 11: 
+			case 12: 
 				newAction = ObjectFactory.CreateAction("gum.actions.ActionDestroyItem");
 				break;
-			case 12: 
+			case 13: 
 				newAction = ObjectFactory.CreateAction("gum.actions.ActionMenu");
 				break;
-			case 13: 
+			case 14: 
 				newAction = ObjectFactory.CreateAction("gum.actions.ActionBuy");
 				break;
-			case 14: 
+			case 15: 
 				newAction = ObjectFactory.CreateAction("gum.actions.ActionSell");
 				break;
-			case 15: 
+			case 16: 
 				newAction = ObjectFactory.CreateAction("gum.actions.ActionSetStartRoom");
 				break;
 			}
