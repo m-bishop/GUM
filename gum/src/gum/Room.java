@@ -249,7 +249,7 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 	 * return output; }
 	 */
 	public String getPlayerList() {
-		String output = "players: ";
+		String output = "Users: ";
 
 		Enumeration<Player> e = players.elements();
 		while (e.hasMoreElements()) {

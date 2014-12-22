@@ -1,5 +1,9 @@
 package gum.menus;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 import gum.User;
 
 public class PromptForString {
@@ -25,6 +29,18 @@ public class PromptForString {
 			if (response.equalsIgnoreCase("exit")){
 				done = true;
 				result = false;
+			}else if (response.startsWith("*file")){
+				
+				  try {
+						this.loadDescriptionFromFile(response.substring(6));
+						user.broadcast("Description Loaded.\r\n");
+						done = true;
+						result = true;
+					} catch (FileNotFoundException e) {
+						user.broadcast("File Not Found!\r\n");
+						done = true;
+						result = false;
+					}
 			}else if (response.equals("exitall")){
 				throw new MenuExitException();
 			}else {
@@ -43,5 +59,16 @@ public class PromptForString {
 
 	public String getResult() {
 		return menuResult;
-	}		
+	}
+	
+	private void loadDescriptionFromFile(String filename) throws FileNotFoundException{
+
+        File file = new File(filename);
+        StringBuilder description = new StringBuilder();
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+            	description.append(scanner.nextLine()+"\r\n");
+            }
+            menuResult = description.toString();    
+    }
 }

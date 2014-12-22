@@ -751,7 +751,7 @@ public class ItemBase extends Item {
 		PromptForBoolean b = new PromptForBoolean(u,menuString);
 		if (b.display()){
 			this.setStationary(b.getResult());
-			u.broadcast("Item Stationary Flag set to:"+this.getIsInvisable()+"\r\n");
+			u.broadcast("Item Stationary Flag set to:"+this.getIsStationary()+"\r\n");
 		} else {
 			u.broadcast("Item Stationary Flag unchanged!\r\n");
 		}
@@ -892,7 +892,7 @@ public class ItemBase extends Item {
 		int newSettingValue = 0;
 		String settingMenuString =  "This will configure a setting that will be added to the user\r\n";
 		       settingMenuString += "when the user takes this item.\r\n";
-		       settingMenuString += "Currently this Item sets:"+this.getEffectSettingName()+" to:"+this.getEffectSettingValue()+".\r\n";
+		       settingMenuString += "Currently this Item sets:"+this.getPreReqSettingName()+" to:"+this.getPreReqSettingValue()+".\r\n";
 		
 		u.broadcast(settingMenuString);
 		
@@ -901,8 +901,9 @@ public class ItemBase extends Item {
 			done = false;
 		} else {
 			newSettingValue = this.getSettingValue(u);
-			this.setEffectSettingName(newSettingName);
-			this.setEffectSettingValue(newSettingValue);
+			this.setPreReqSettingName(newSettingName);
+			this.setPreReqSettingValue(newSettingValue);
+		
 		}
 		
 		return done;

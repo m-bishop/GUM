@@ -236,9 +236,8 @@ public class ActionModify extends Action {
 
 		String settingMenuString =  "This will configure the base setting to be used by this action.\r\n";
 			   settingMenuString += "the new setting will be equal to the THIS+Base + (1->Roll).\r\n";
-		       settingMenuString += "Currently this Action's base setting is:"+this.baseSetting+"\r\n";
 		       settingMenuString += "Enter '*today', and zero for base and roll, to set to today's date. \r\n";
-		       settingMenuString += "Enter a new setting:\r\n";
+		       settingMenuString += "Currently this Action's base setting is:"+this.baseSetting+"\r\n";
 		
 		u.broadcast(settingMenuString);
 		
@@ -300,7 +299,6 @@ public class ActionModify extends Action {
 		String settingMenuString =  "This will configure a setting to be modified by this action.\r\n";
 			   settingMenuString += "the new setting will be equal to the Base + (1->Roll).\r\n";
 		       settingMenuString += "Currently this Action's modification setting is:"+this.getModSetting()+"\r\n";
-		       settingMenuString += "Enter a new setting:\r\n";
 		
 		u.broadcast(settingMenuString);
 		

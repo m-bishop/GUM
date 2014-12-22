@@ -432,17 +432,16 @@ public abstract class Player extends Thread implements ItemContainer  {
 
     public void stats(){
         broadcast("=============================STATS==============================\r\n\r\n");
-        broadcast("\t\tStrength:"+getSetting("str")+"\tIntelligence:"+getSetting("int")+"\r\n");
-        broadcast("\t\tReflex:"+getSetting("ref")+"\tDexterity:"+getSetting("dex")+"\r\n");
         broadcast("\t\tFollowing:"+this.following+"\r\n");
+        broadcast("\t\tCycles:"+this.getSetting("cycles")+"\r\n");
         broadcast("\t\tHit Points:"+getSetting("hitpoints")+"\r\n");
-        broadcast("\r\n=============================SKILLS=============================\r\n\r\n");
+        broadcast("\r\n==========================ATTRIBUTES===========================\r\n\r\n");
         Vector<String> skillList = World.getArea().getSkillList();
         for (String skill : skillList){
 			broadcast("\t"+skill+"\t"+getSetting(skill)+"\r\n");
 		}
         System.out.println(this.getSettings());
-        broadcast("\r\n============================MISSIONS============================\r\n\r\n");
+        broadcast("\r\n============================NOTES==============================\r\n\r\n");
         HashMap<String,String> missions = World.getArea().getMissionMap();
         for (String m : missions.keySet()){
         		if (this.getSetting(m) == 1){
@@ -721,7 +720,9 @@ public abstract class Player extends Thread implements ItemContainer  {
 	  
         if (!fighting){
             result = getCurrentRoom().moveUser(this, direction);
-            this.look();
+            if (result){ // if the user moved, look at the new room.
+            	this.look();
+            }
         } else {
             broadcast("Can't do that while fighting!\r\n");
         }
