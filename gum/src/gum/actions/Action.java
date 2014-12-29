@@ -503,8 +503,9 @@ public abstract class Action implements MenuContainer{
 		menuString += "(14) Buy  \r\n";
 		menuString += "(15) Sell  \r\n";
 		menuString += "(16) Set Start Room \r\n";
+		menuString += "(17) Command Loop \r\n";
 		menuString += "Choose from the above. Type 'exit' to return to the previous menu.\r\n";
-		PromptForInteger p = new PromptForInteger(u, menuString, 15, 1);
+		PromptForInteger p = new PromptForInteger(u, menuString, 17, 1);
 		if (p.display()) {
 			switch (p.getResult()) {
 			case 1:
@@ -554,6 +555,9 @@ public abstract class Action implements MenuContainer{
 				break;
 			case 16: 
 				newAction = ObjectFactory.CreateAction("gum.actions.ActionSetStartRoom");
+				break;
+			case 17: 
+				newAction = ObjectFactory.CreateAction("gum.actions.ActionCommandLoop");
 				break;
 			}
 		}
