@@ -30,7 +30,7 @@ public abstract class Action implements MenuContainer{
 	private ActionHeader header = null;
 		
 	public enum EffectRange {
-		USER,TARGET,ROOM,WORLD,ENEMIES,ALLIES,BATTLE,ITEM,TARGETITEM
+		USER,TARGET,ROOM,WORLD,ENEMIES,ALLIES,BATTLE,ITEM,TARGETITEM,TIMED
 	}
 	
 	//public abstract void perform (Player player, Player target, ItemBase item, ItemBase targetItem);
@@ -80,10 +80,13 @@ public abstract class Action implements MenuContainer{
 			break;
 		case TARGETITEM:
 			break;
+		case TIMED:
+			performOnTarget(); //This just runs the doAction method once per revolution. 
 		default:
 			break;
 		}
 	}
+	
 	
 	public void performOnBattle(){
 		 Vector<Player> targets = header.getPlayer().getBattleHandler().getUsers();
@@ -504,8 +507,9 @@ public abstract class Action implements MenuContainer{
 		menuString += "(15) Sell  \r\n";
 		menuString += "(16) Set Start Room \r\n";
 		menuString += "(17) Command Loop \r\n";
+		menuString += "(18) Setup Spot The Fed \r\n";
 		menuString += "Choose from the above. Type 'exit' to return to the previous menu.\r\n";
-		PromptForInteger p = new PromptForInteger(u, menuString, 17, 1);
+		PromptForInteger p = new PromptForInteger(u, menuString, 18, 1);
 		if (p.display()) {
 			switch (p.getResult()) {
 			case 1:
@@ -558,6 +562,9 @@ public abstract class Action implements MenuContainer{
 				break;
 			case 17: 
 				newAction = ObjectFactory.CreateAction("gum.actions.ActionCommandLoop");
+				break;
+			case 18: 
+				newAction = ObjectFactory.CreateAction("gum.actions.ActionSetupSTF");
 				break;
 			}
 		}

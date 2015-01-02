@@ -9,7 +9,7 @@ import gum.menus.PromptForString;
 
 public class ActionTimed implements MenuContainer {
 	
-	private int interval = 1; //how often, in seconds, should this action take place
+	private int interval = 1; //how often, in minutes, should this action take place
 	private int counter = 0;
 	private Action timedAction = null; // the action to take place. 
 	private String name = "DEFAULT";
@@ -47,9 +47,9 @@ public class ActionTimed implements MenuContainer {
 	
     public int configInterval(User u) throws MenuExitException{
     	int result = 0;
-    	String menuString = "Set the interval of this timed action in seconds.\r\n";
+    	String menuString = "Set the interval of this timed action in minutes.\r\n";
     	       menuString += "The server will execute the action associated with this timer\r\n";
-    	       menuString += "every (interval) seconds.\r\n";
+    	       menuString += "every (interval) minutes.\r\n";
     	        	
     	PromptForInteger i = new PromptForInteger(u,menuString);
     	boolean done = i.display();

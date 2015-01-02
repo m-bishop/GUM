@@ -55,6 +55,7 @@ public class ActionCheck extends Action {
 		ItemBase item = this.getHeader().getItem();
 		ItemBase targetItem = this.getHeader().getTargetItem();
 		int tSetting;
+		gum.Area cArea = World.getArea();
 		
 		switch (this.getRange()) {	
 		case TARGET: // in this case, the user performs the action on the target.
@@ -83,7 +84,6 @@ public class ActionCheck extends Action {
 			this.performCheck(player, target, item, targetItem, cRoom.getSetting(checkSetting), tSetting);
 			break;
 		case WORLD: // Changes the world setting.
-			gum.Area cArea = World.getArea();
 			
 			if (targetSetting.equalsIgnoreCase("*today")){
 				DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -134,8 +134,25 @@ public class ActionCheck extends Action {
 				this.performCheck(player, target, item, targetItem, targetItem.getSetting(checkSetting),tSetting);
 			}
 			break;
+		case TIMED:
+			if (targetSetting.equalsIgnoreCase("*today")){
+				DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+				Date date = new Date();
+				tSetting = Integer.valueOf(dateFormat.format(date));
+				tSetting = tSetting+this.target;
+			}
+			else {
+				tSetting = (cArea.getSetting(targetSetting))+this.target;
+			}
+			
+			this.performCheck(player, target, item, targetItem, cArea.getSetting(checkSetting), tSetting);
+			break;
 		}
 	}
+	
+
+	
+	
 	//TODO remember to clean up these methods that don't use the 'header' info
 	// When this was written, it used the four seperate variables. Now those are
 	// contained in the ActionHeader. 

@@ -73,21 +73,8 @@ public class ActionModify extends Action {
 				this.getSuccessAction().perform(this.getHeader());
 			}
 			break;
-		case WORLD: // Changes the world setting.
-			gum.Area cArea = World.getArea();
-			Random random = new Random();
-			int rolled = 0;
-	    	if (roll > 0){
-	    		rolled = random.nextInt(roll)+1;
-	    	}
-			int newAreaValue = this.getModifiedSetting(cArea.getSetting(modSetting), bSetting, base, rolled);
-			cArea.setSetting(modSetting, newAreaValue);
-			if (player != null){// timed world actions have no player
-				player.broadcast(this.getSuccessMessage());
-			}
-			if (this.getSuccessAction() != null){
-				this.getSuccessAction().perform(this.getHeader());
-			}
+		case WORLD: 
+			processWorld(player);
 			break;
 		case ENEMIES: //User performs action on each mob in the room.
 			performOnEnemies();
@@ -119,7 +106,32 @@ public class ActionModify extends Action {
 				System.out.println(targetItem.getName()+" setting modified:"+modSetting+","+newTargetItemValue);
 			}
 			break;
+		case TIMED:
+			processWorld(player);
+			break;
 		}
+	}
+	
+	private void processWorld(Player player){
+		// Changes the world setting.
+		 
+					gum.Area cArea = World.getArea();
+					Random random = new Random();
+					int rolled = 0;
+					int bSetting = cArea.getSetting(baseSetting);
+					
+			    	if (roll > 0){
+			    		rolled = random.nextInt(roll)+1;
+			    	}
+					int newAreaValue = this.getModifiedSetting(cArea.getSetting(modSetting), bSetting, base, rolled);
+					cArea.setSetting(modSetting, newAreaValue);
+					if (player != null){// timed world actions have no player
+						player.broadcast(this.getSuccessMessage());
+					}
+					if (this.getSuccessAction() != null){
+						this.getSuccessAction().perform(this.getHeader());
+					}
+		
 	}
 	
 	

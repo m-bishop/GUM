@@ -19,6 +19,7 @@ import gum.actions.ActionTimed;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Enumeration;
+import java.util.Vector;
 
 public class GameClock extends Thread {
 	
@@ -54,10 +55,14 @@ public class GameClock extends Thread {
 
     private void processActionList(){
         System.out.println("processing Action list.");
+		@SuppressWarnings("unchecked") // We know this Vector only contains that type. TODO: change vectors to lists.
+		// Make a copy so that actions can remove themselves without concurrency issues.
+		Vector<ActionTimed> ActionListCopy = (Vector<ActionTimed>) World.getArea().getActionList().clone();
         
-        for (ActionTimed a : World.getArea().getActionList()){
+        for (ActionTimed a : ActionListCopy){
         	if (a.processTimer() == 0){
         	    ActionHeader header = new ActionHeader (null,null,null,null);
+        	    
         	    a.getTimedAction().perform(header);
         	}
         }
