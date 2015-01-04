@@ -45,7 +45,7 @@ public class ActionSetupSTF extends Action {
 		String menuString = "Welcome to Spot The Fed! \r\n";
 		menuString += "(01) Vote \r\n";
 		menuString += "(02) Commit Suicide \r\n";
-		menuString += "(03) Read personal Email \r\n";
+		menuString += "(03) Use Role \r\n";
 		menuString += "(04) Read Notifications \r\n";
 		menuString += "Choose from the above. Type 'exit' to exit the menu.\r\n";
 
@@ -53,13 +53,13 @@ public class ActionSetupSTF extends Action {
 		while (p.display()) {
 			switch (p.getResult()) {
 			case 1:
-				u.broadcast("Voting is not yet implemented!");
+				vote(u);
 				break;
 			case 2:
-				u.broadcast("Suicide is not yet implemented!");
+				suicide(u);
 				break;
 			case 3:
-				u.broadcast("Email is not yet implemented!");
+				useRole(u);
 				break;
 			case 4:
 				u.broadcast("Notifications are not yet implemented!");
@@ -67,6 +67,82 @@ public class ActionSetupSTF extends Action {
 			}
 		}
 		u.broadcast("\r\nExiting Configuration Menu.\r\n\r\n");
+	}
+	
+	private void useRole(User u) throws MenuExitException{
+		ActionProcessSTF game = this.getExistingGame();
+		STFPlayer player = game.getPlayer(u);
+		
+		String menuString = "";
+		
+		
+		if (player != null){
+			
+			switch (player.getPlayerRole()){
+			case PROTECTOR:
+				menuString = "Who do you want to protect this round: \r\n";
+			break;
+			case AGENT:
+				menuString = "Who do you want to investigate this round: \r\n";
+			break;
+			case ASSASIN:
+				menuString = "Who do you want to out this round: \r\n";
+			break;
+			case PUNK:
+				menuString = "You're just a punk. Who do you want to hate this round: \r\n";
+			break;
+			}
+			@SuppressWarnings("unchecked")
+			Vector<STFPlayer> playerList = (Vector<STFPlayer>) game.getPlayers().clone();
+			for (int i = 0; i >= playerList.size() ; i++){
+				menuString += "("+i+") "+playerList.get(i).getUserName()+"\r\n";
+			}
+			PromptForInteger p = new PromptForInteger(u, menuString, playerList.size()-1, 1);
+			if (p.display()) {
+				String target = playerList.get(p.getResult()).getUserName();
+				player.setTarget(target);
+				u.broadcast("Targeting: "+target);
+			}
+			
+		}
+	}
+	
+	private void suicide(User u) throws MenuExitException{
+		ActionProcessSTF game = this.getExistingGame();
+		String menuString = "Are you sure you want to commit suicide? \r\n";
+			  menuString += "(1) Yes \r\n";
+			  menuString += "(2) No \r\n";
+			  
+			  PromptForInteger p = new PromptForInteger(u, menuString, 2, 1);
+			  if (p.display()){
+				  if (p.getResult() == 1){
+						@SuppressWarnings("unchecked")
+						Vector<STFPlayer> playerList = (Vector<STFPlayer>) game.getPlayers().clone();
+						for (int i = 0; i >= playerList.size() ; i++){
+							if (u.getPlayerName() == playerList.get(i).getUserName()){
+								game.hangPlayer(i);
+							}
+						}
+				  }
+			  }
+	}
+	
+	private void vote(User u) throws MenuExitException{
+		ActionProcessSTF game = this.getExistingGame();
+		String menuString = "Who do you want to vote for: \r\n";
+		
+		@SuppressWarnings("unchecked")
+		Vector<STFPlayer> playerList = (Vector<STFPlayer>) game.getPlayers().clone();
+		for (int i = 0; i >= playerList.size() ; i++){
+			menuString += "("+i+") "+playerList.get(i).getUserName()+"\r\n";
+		}
+
+		PromptForInteger p = new PromptForInteger(u, menuString, playerList.size()-1, 1);
+		if (p.display()) {
+			String votedName = playerList.get(p.getResult()).getUserName();
+			game.castVote(u, votedName);
+			World.getArea().GlobalChat(u.getPlayerName()+" voted for "+votedName);
+		}
 	}
 	
 	public void configMenu(User u) throws MenuExitException {
@@ -220,8 +296,12 @@ public class ActionSetupSTF extends Action {
 		return result;	
 	}
 	
-	private void setRoles(){		
-		
+	private void setRoles(){	
+		// set everyone to a punk
+		for (int i = 0; i >= newSTFPlayers.size() ; i++){
+			newSTFPlayers.get(i).setPlayerRole(STFPlayer.role.PUNK);
+		}
+		// shuffle the group, then set 1/4 of the players to FBI Agents.
 		Collections.shuffle(newSTFPlayers);
 		int fedCount = (newSTFPlayers.size() / 4);
 		
@@ -230,9 +310,17 @@ public class ActionSetupSTF extends Action {
 		}
 		
 		for (int i = 1; i == fedCount ; i++){
-			newSTFPlayers.get(i).setFed(true);
+			STFPlayer cPlayer;
+			cPlayer = newSTFPlayers.get(i);
+			
+			cPlayer.setFed(true);
+			cPlayer.setPlayerRole(STFPlayer.role.AGENT);	
 		}
-		
+		// set a protector and assasin
+		newSTFPlayers.get(fedCount+1).setPlayerRole(STFPlayer.role.PROTECTOR);
+		newSTFPlayers.get(fedCount+1).setPlayerRole(STFPlayer.role.ASSASIN);
+		// re-shuffle so people don't realize the players at the top of the list are most important.
+		Collections.shuffle(newSTFPlayers); 
 	}
 	
 	private void startGame(User u){
