@@ -1003,7 +1003,10 @@ public abstract class Player extends Thread implements ItemContainer  {
         		FileOutputStream os = new FileOutputStream(fileName);
         		XMLEncoder encoder = new XMLEncoder(os);
         		encoder.writeObject(this);
+        		encoder.flush(); //
         		encoder.close();
+        		os.flush(); //
+        		os.close(); //
         	} catch (Exception e){
         		System.out.println("Error Saving!");
         		e.printStackTrace();

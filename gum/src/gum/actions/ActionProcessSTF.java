@@ -34,7 +34,7 @@ public class ActionProcessSTF extends Action {
 		int fedCount = 0;
 		
 		
-		for (int i = 0; i == players.size() ; i++){
+		for (int i = 0; i < players.size() ; i++){
 			if (players.get(i).isFed()){
 				fedCount++;
 			}
@@ -63,7 +63,7 @@ public class ActionProcessSTF extends Action {
 	private void clearRound(){
 		STFPlayer currentPlayer;
 		
-		for (int i = 0; i == players.size() ; i++){
+		for (int i = 0; i < players.size() ; i++){
 			currentPlayer = players.get(i);
 			currentPlayer.setVotedFor("None");
 			currentPlayer.setVotesAgainst(0);
@@ -74,10 +74,10 @@ public class ActionProcessSTF extends Action {
 		STFPlayer currentPlayer;	
 		int hungPlayer = -1;
 		
-		for (int i = 0; i == players.size() ; i++){
+		for (int i = 0; i < players.size() ; i++){
 			currentPlayer = players.get(i);
-			for (int j = 0; i == players.size() ; j++){
-				if (players.get(j).getVotedFor() == currentPlayer.getUserName()){
+			for (int j = 0; j < players.size() ; j++){
+				if (players.get(j).getVotedFor().equals(currentPlayer.getUserName())){
 					currentPlayer.setVotesAgainst(currentPlayer.getVotesAgainst()+1);
 				}
 			}
@@ -110,26 +110,26 @@ public class ActionProcessSTF extends Action {
 		@SuppressWarnings("unchecked")
 		Vector<STFPlayer> playerList = (Vector<STFPlayer>) players.clone();
 		
-		for (int i = 0; i == players.size() ; i++){
+		for (int i = 0; i < players.size() ; i++){
 			if (players.get(i).getPlayerRole() == STFPlayer.role.PROTECTOR){
 				protectedPlayer = players.get(i).getTarget();
 			}
 		}
 		
-		for (int i = 0; i == playerList.size() ; i++){
+		for (int i = 0; i < playerList.size() ; i++){
 			
 				cPlayer = playerList.get(i);
 				switch (cPlayer.getPlayerRole()){
 
 				case AGENT:
-					if (cPlayer.getTarget() != protectedPlayer){
+					if (!cPlayer.getTarget().equals(protectedPlayer)){
 						removedPlayer = getPlayerByName(cPlayer.getTarget());
 						players.remove(removedPlayer);
 						World.getArea().GlobalChat(removedPlayer.getUserName() + " was Outed! Here is who they REALLY are!\r\n"+ removedPlayer.getRevealText());
 					}
 				break;
 				case ASSASIN:
-					if (cPlayer.getTarget() != protectedPlayer){
+					if (!cPlayer.getTarget().equals(protectedPlayer)){
 						removedPlayer = getPlayerByName(cPlayer.getTarget());
 						players.remove(removedPlayer);
 						World.getArea().GlobalChat(removedPlayer.getUserName() + " was Outed! Here is who they REALLY are!\r\n"+ removedPlayer.getRevealText());
@@ -187,8 +187,9 @@ public class ActionProcessSTF extends Action {
 		int i = 0;
 		
 		synchronized (players) { // in case someone tries to vote at the same time someone is hung. 
+									// TODO use iterators. Sheesh.
 		while ((!found) && (i < players.size()) ){
-			if (players.get(i).getUserName() == u.getName()){
+			if (players.get(i).getUserName().equals(u.getName())){
 				result = players.get(i);
 				found = true;
 			} else {
@@ -204,9 +205,10 @@ public class ActionProcessSTF extends Action {
 		boolean found = false;
 		int i = 0;
 		
-		synchronized (players) { // in case someone tries to vote at the same time someone is hung. 
+		synchronized (players) { // in case someone tries to vote at the same time someone is hung.
+									// TODO use iterators. Sheesh.
 		while ((!found) && (i < players.size()) ){
-			if (players.get(i).getUserName() == name){
+			if (players.get(i).getUserName().equals(name)){
 				result = players.get(i);
 				found = true;
 			} else {
@@ -222,8 +224,9 @@ public class ActionProcessSTF extends Action {
 		int i = 0;
 		
 		synchronized (players) { // in case someone tries to vote at the same time someone is hung. 
+								// TODO use iterators. Sheesh.
 		while ((!found) && (i < players.size()) ){
-			if (players.get(i).getUserName() == u.getName()){
+			if (players.get(i).getUserName().equals(u.getName())){
 				players.get(i).setVotedFor(vote);
 				found = true;
 			} else {

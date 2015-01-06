@@ -26,6 +26,7 @@ import java.beans.XMLEncoder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -1272,21 +1273,39 @@ public class ItemBase extends Item {
                p.addToInventory(this); 
                //items.add(taken_item);
            } else {
-               //if (taken_item.getFilename().equals("")){
-               //    this.broadcast("Cannot take this item unti bulder runs 'saveimage'!");
-               //}
-               //Item new_item = ObjectFactory.CreateItem(taken_item.getFilename());
-               ByteArrayOutputStream os = new ByteArrayOutputStream();
-               XMLEncoder encoder = new XMLEncoder(os);
-               encoder.writeObject(this);
-               encoder.close();
+        	        
+        	   try {
+        		   /* proper serialization method
+        	   ByteArrayOutputStream os = new ByteArrayOutputStream();
+               ObjectOutputStream oos = new ObjectOutputStream(os);
+               oos.writeObject(this);
+               oos.flush();
                ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+               ObjectInputStream decoder = new ObjectInputStream(is);
+               */
+        		ItemContainer temp = this.getItemContainer();
+           		this.setItemContainer(null);   
+        		ByteArrayOutputStream os = new ByteArrayOutputStream();  
+           		XMLEncoder encoder = new XMLEncoder(os);
+           		encoder.writeObject(this);
+           	
+           		encoder.close();
+               ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+             
                XMLDecoder decoder = new XMLDecoder(is);
                Item new_item = (Item)decoder.readObject();
+               decoder.close();
      
+               this.setItemContainer(temp);
+               
                new_item.setIsInfinite(false);
                p.addToInventory(new_item);
-               //items.add(new_item);
+              
+   			
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
            }   
            result = true;
        }
@@ -1317,6 +1336,22 @@ public class ItemBase extends Item {
         }
     }
 
+    public void save(String fileName){
+    	try{
+    		ItemContainer temp = this.getItemContainer();
+    		this.setItemContainer(null);
+    		System.out.println("saving Item:"+this.getItemName()+" as:"+fileName);
+    		FileOutputStream os = new FileOutputStream(fileName);
+    		XMLEncoder encoder = new XMLEncoder(os);
+    		encoder.writeObject(this);
+    		encoder.close();
+    		this.setItemContainer(temp);
+    	} catch (Exception e){
+    		e.printStackTrace();
+    	}	
+    }
+    
+    
     public boolean getIsInvisable() {
         return isInvisable;
     }

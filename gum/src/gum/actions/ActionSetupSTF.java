@@ -36,7 +36,12 @@ public class ActionSetupSTF extends Action {
 			if (game == null){
 				this.performSetupMenu(u);
 			}else {
-				this.performGameMenu(u,game);
+				if (game.getPlayerByName(u.getPlayerName()) != null){
+					this.performGameMenu(u,game);
+				} else {
+					u.broadcast("There is a game in progress. Please wait until the next round.\r\n");
+				}
+				
 			}
 		}
 	}
@@ -94,7 +99,7 @@ public class ActionSetupSTF extends Action {
 			}
 			@SuppressWarnings("unchecked")
 			Vector<STFPlayer> playerList = (Vector<STFPlayer>) game.getPlayers().clone();
-			for (int i = 0; i >= playerList.size() ; i++){
+			for (int i = 0; i < playerList.size() ; i++){
 				menuString += "("+i+") "+playerList.get(i).getUserName()+"\r\n";
 			}
 			PromptForInteger p = new PromptForInteger(u, menuString, playerList.size()-1, 1);
@@ -118,7 +123,7 @@ public class ActionSetupSTF extends Action {
 				  if (p.getResult() == 1){
 						@SuppressWarnings("unchecked")
 						Vector<STFPlayer> playerList = (Vector<STFPlayer>) game.getPlayers().clone();
-						for (int i = 0; i >= playerList.size() ; i++){
+						for (int i = 0; i < playerList.size() ; i++){
 							if (u.getPlayerName() == playerList.get(i).getUserName()){
 								game.hangPlayer(i);
 							}
@@ -133,7 +138,7 @@ public class ActionSetupSTF extends Action {
 		
 		@SuppressWarnings("unchecked")
 		Vector<STFPlayer> playerList = (Vector<STFPlayer>) game.getPlayers().clone();
-		for (int i = 0; i >= playerList.size() ; i++){
+		for (int i = 0; i < playerList.size() ; i++){
 			menuString += "("+i+") "+playerList.get(i).getUserName()+"\r\n";
 		}
 
@@ -232,10 +237,16 @@ public class ActionSetupSTF extends Action {
         	s = new PromptForString(u, menuString);
         	recieved = s.display();
 		
-        	if (recieved){ // if user entered a recipient, try to find that user
-			
+        	if (recieved){ // if user entered a recipient, try to find that user			
         		result = s.getResult();
-        	}
+        		
+        		for (STFPlayer player : newSTFPlayers){
+        			if (player.getUserName().equals(result)){// if the player you're looking for already exists in the Array ...
+        				u.broadcast("Player Already Added!");
+        				throw new MenuExitException(); // let the system know this menu item had an error
+        			}
+        		} 
+        	
 		
 			Enumeration<User> e = User.getUsers().elements();//TODO dangerous to access, in this instance a copy of the vector and it's elements may be preferred. 
 			while (e.hasMoreElements() && !found) {
@@ -250,17 +261,16 @@ public class ActionSetupSTF extends Action {
 			if (!found){
 				fileName = World.getArea().getUserDir() + "/" + s.getResult() + ".xml";
 				found = newPlayer.loadUser(fileName);
-				if (found){
-					// add user to game
-					newSTFPlayer.setUserName(newPlayer.getName());
-					newSTFPlayers.add(newSTFPlayer);
-					u.broadcast("Player Added!");
-				}
 			}
-			
-			if (!found){ // If still not found, report to the user that the username is invalid. 
+			if (found){
+				// add user to game
+				newSTFPlayer.setUserName(newPlayer.getPlayerName());
+				newSTFPlayers.add(newSTFPlayer);
+				u.broadcast("Player Added!");
+			} else { // If still not found, report to the user that the username is invalid. 
 				u.broadcast("User not found.");
 			}
+        	}
 	}
 	
 	private void menuConfigRoundTime(User u) throws MenuExitException{
@@ -298,18 +308,18 @@ public class ActionSetupSTF extends Action {
 	
 	private void setRoles(){	
 		// set everyone to a punk
-		for (int i = 0; i >= newSTFPlayers.size() ; i++){
+		for (int i = 0; i < newSTFPlayers.size() ; i++){
 			newSTFPlayers.get(i).setPlayerRole(STFPlayer.role.PUNK);
 		}
 		// shuffle the group, then set 1/4 of the players to FBI Agents.
 		Collections.shuffle(newSTFPlayers);
 		int fedCount = (newSTFPlayers.size() / 4);
 		
-		if (fedCount < 0){
+		if (fedCount < 1){
 			fedCount = 1; // there must be at least one fed, but really, any less than 4 players is unplayable. 
 		}
 		
-		for (int i = 1; i == fedCount ; i++){
+		for (int i = 0; i <= fedCount-1 ; i++){
 			STFPlayer cPlayer;
 			cPlayer = newSTFPlayers.get(i);
 			
@@ -317,25 +327,32 @@ public class ActionSetupSTF extends Action {
 			cPlayer.setPlayerRole(STFPlayer.role.AGENT);	
 		}
 		// set a protector and assasin
-		newSTFPlayers.get(fedCount+1).setPlayerRole(STFPlayer.role.PROTECTOR);
+		newSTFPlayers.get(fedCount).setPlayerRole(STFPlayer.role.PROTECTOR);
 		newSTFPlayers.get(fedCount+1).setPlayerRole(STFPlayer.role.ASSASIN);
 		// re-shuffle so people don't realize the players at the top of the list are most important.
 		Collections.shuffle(newSTFPlayers); 
 	}
 	
-	private void startGame(User u){
+	@SuppressWarnings("unchecked")
+	private void startGame(User u) throws MenuExitException{
 		ActionTimed gameTimer = new ActionTimed();
 		ActionProcessSTF gameProcess = new ActionProcessSTF();
+		
+		if (newSTFPlayers.size() < 4){
+			u.broadcast("At least 4 players required to play. 8 recommended.\r\n");
+			throw new MenuExitException();
+		}
 		
 		setRoles();
 		
 		gameProcess.setRoundTimer(this.getMinutesPerPerson() * this.getNewSTFPlayers().size());
 		gameProcess.setParent(gameTimer);
-		gameProcess.setPlayers(this.getNewSTFPlayers());
+		gameProcess.setPlayers((Vector<STFPlayer>) this.getNewSTFPlayers().clone());
 		
 		gameTimer.setName("STF_GameTimer");
 		gameTimer.setTimedAction(gameProcess);
 		World.getArea().getActionList().add(gameTimer);
+		newSTFPlayers.clear();
 	}
 	
 	@Override
