@@ -44,7 +44,8 @@ public class ActionProcessSTF extends Action {
 			result = true;
 			processFedWin();
 		}
-		if (fedCount <= 0){ // if all the feds are outed, punks win. 
+		if (fedCount <= 0){ // if all the feds are outed, punks win.
+			result = true;
 			processPunkWin();
 		}
 		
@@ -97,9 +98,10 @@ public class ActionProcessSTF extends Action {
 		processRoles();
 		if (isGameOver()){
 			World.getArea().getActionList().remove(parent);
-			World.getArea().GlobalChat("Exiting STF Timer \r\n");
+			World.getArea().GlobalChat("Spot the Fed has ended!  \r\n");
 		} else {	
 			roundTimer = (minutesPerPerson * players.size());
+			World.getArea().GlobalChat("Starting new round. This round will last "+roundTimer+" minutes.");
 			clearRound();
 		}
 	}
@@ -124,15 +126,19 @@ public class ActionProcessSTF extends Action {
 				case AGENT:
 					if (!cPlayer.getTarget().equals(protectedPlayer)){
 						removedPlayer = getPlayerByName(cPlayer.getTarget());
-						players.remove(removedPlayer);
-						World.getArea().GlobalChat(removedPlayer.getUserName() + " was Outed! Here is who they REALLY are!\r\n"+ removedPlayer.getRevealText());
+						if (removedPlayer != null){
+							players.remove(removedPlayer);
+							World.getArea().GlobalChat(removedPlayer.getUserName() + " was Outed! Here is who they REALLY are!\r\n"+ removedPlayer.getRevealText());
+						}
 					}
 				break;
 				case ASSASIN:
 					if (!cPlayer.getTarget().equals(protectedPlayer)){
 						removedPlayer = getPlayerByName(cPlayer.getTarget());
-						players.remove(removedPlayer);
-						World.getArea().GlobalChat(removedPlayer.getUserName() + " was Outed! Here is who they REALLY are!\r\n"+ removedPlayer.getRevealText());
+						if (removedPlayer != null){
+							players.remove(removedPlayer);
+							World.getArea().GlobalChat(removedPlayer.getUserName() + " was Outed! Here is who they REALLY are!\r\n"+ removedPlayer.getRevealText());
+						}
 					}
 				break;
 				default: // hey, not everyone gets a cool superpower.
@@ -152,9 +158,9 @@ public class ActionProcessSTF extends Action {
 	
 	@Override
 	public boolean doAction(ActionHeader header) {
-		
+		try{
 		this.roundTimer = this.roundTimer - 1;
-		World.getArea().GlobalChat("Processing STF timer: "+roundTimer+"\r\n");
+		World.getArea().GlobalChat("Minutes left in this Spot The Fed Round: "+roundTimer+"\r\n");
 		processVotes();
 		
 		switch (roundTimer){
@@ -171,7 +177,13 @@ public class ActionProcessSTF extends Action {
 				processMissedVote();
 			break;
 		}
-		
+		}
+		catch (Exception e){
+			World.getArea().GlobalChat("Spot the Fed exited abnoramally.");
+			World.getArea().getActionList().remove(parent);
+			e.printStackTrace();
+			
+		}
 		return true;
 	}
 
@@ -189,7 +201,7 @@ public class ActionProcessSTF extends Action {
 		synchronized (players) { // in case someone tries to vote at the same time someone is hung. 
 									// TODO use iterators. Sheesh.
 		while ((!found) && (i < players.size()) ){
-			if (players.get(i).getUserName().equals(u.getName())){
+			if (players.get(i).getUserName().equals(u.getPlayerName())){
 				result = players.get(i);
 				found = true;
 			} else {
@@ -226,7 +238,7 @@ public class ActionProcessSTF extends Action {
 		synchronized (players) { // in case someone tries to vote at the same time someone is hung. 
 								// TODO use iterators. Sheesh.
 		while ((!found) && (i < players.size()) ){
-			if (players.get(i).getUserName().equals(u.getName())){
+			if (players.get(i).getUserName().equals(u.getPlayerName())){
 				players.get(i).setVotedFor(vote);
 				found = true;
 			} else {

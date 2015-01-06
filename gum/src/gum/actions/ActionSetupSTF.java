@@ -100,11 +100,11 @@ public class ActionSetupSTF extends Action {
 			@SuppressWarnings("unchecked")
 			Vector<STFPlayer> playerList = (Vector<STFPlayer>) game.getPlayers().clone();
 			for (int i = 0; i < playerList.size() ; i++){
-				menuString += "("+i+") "+playerList.get(i).getUserName()+"\r\n";
+				menuString += "("+(i+1)+") "+playerList.get(i).getUserName()+"\r\n";
 			}
-			PromptForInteger p = new PromptForInteger(u, menuString, playerList.size()-1, 1);
+			PromptForInteger p = new PromptForInteger(u, menuString, playerList.size(), 1);
 			if (p.display()) {
-				String target = playerList.get(p.getResult()).getUserName();
+				String target = playerList.get(p.getResult()-1).getUserName();
 				player.setTarget(target);
 				u.broadcast("Targeting: "+target);
 			}
@@ -139,12 +139,12 @@ public class ActionSetupSTF extends Action {
 		@SuppressWarnings("unchecked")
 		Vector<STFPlayer> playerList = (Vector<STFPlayer>) game.getPlayers().clone();
 		for (int i = 0; i < playerList.size() ; i++){
-			menuString += "("+i+") "+playerList.get(i).getUserName()+"\r\n";
+			menuString += "("+(i+1)+") "+playerList.get(i).getUserName()+"\r\n";
 		}
 
-		PromptForInteger p = new PromptForInteger(u, menuString, playerList.size()-1, 1);
+		PromptForInteger p = new PromptForInteger(u, menuString, playerList.size(), 1);
 		if (p.display()) {
-			String votedName = playerList.get(p.getResult()).getUserName();
+			String votedName = playerList.get(p.getResult()-1).getUserName();
 			game.castVote(u, votedName);
 			World.getArea().GlobalChat(u.getPlayerName()+" voted for "+votedName);
 		}
@@ -346,6 +346,7 @@ public class ActionSetupSTF extends Action {
 		setRoles();
 		
 		gameProcess.setRoundTimer(this.getMinutesPerPerson() * this.getNewSTFPlayers().size());
+		gameProcess.setMinutesPerPerson(minutesPerPerson);
 		gameProcess.setParent(gameTimer);
 		gameProcess.setPlayers((Vector<STFPlayer>) this.getNewSTFPlayers().clone());
 		
