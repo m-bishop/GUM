@@ -649,7 +649,7 @@ try {
 		String output;
 		output = r.getRoomDescription();
 		output += r.getPlayerList() + "\r\n";
-		output += "Obvious Exits:" + r.getVisibleExits()
+		output += "Exits:" + r.getVisibleExits()
 				+ "\r\n";
 		this.broadcast(output);
 	}

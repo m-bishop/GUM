@@ -33,6 +33,10 @@ public class ActionProcessSTF extends Action {
 		boolean result = false;
 		int fedCount = 0;
 		
+		if (players.isEmpty()){
+			processTPK();
+			result = true;
+		}else {
 		
 		for (int i = 0; i < players.size() ; i++){
 			if (players.get(i).isFed()){
@@ -43,14 +47,20 @@ public class ActionProcessSTF extends Action {
 		if (fedCount >= (players.size()-fedCount)) { // if there are as many, or more, feds than punks, the feds win.
 			result = true;
 			processFedWin();
-		}
-		if (fedCount <= 0){ // if all the feds are outed, punks win.
+		} 
+		
+		else if (fedCount <= 0){ // if all the feds are outed, punks win.
 			result = true;
 			processPunkWin();
+		} 
 		}
 		
 		
 		return result;
+	}
+	
+	private void processTPK(){
+		World.getArea().GlobalChat("Everyone has been outed ... SETEC ASTRONOMY!\r\n");	
 	}
 	
 	private void processFedWin(){
@@ -234,20 +244,21 @@ public class ActionProcessSTF extends Action {
 	public void castVote(User u, String vote){
 		boolean found = false;
 		int i = 0;
-		
-		synchronized (players) { // in case someone tries to vote at the same time someone is hung. 
-								// TODO use iterators. Sheesh.
-		while ((!found) && (i < players.size()) ){
-			if (players.get(i).getUserName().equals(u.getPlayerName())){
-				players.get(i).setVotedFor(vote);
-				found = true;
-			} else {
-				i++;
+		if (this.getPlayer(u) != null){ // don't let players vote if they've been outed.
+			synchronized (players) { // in case someone tries to vote at the same time someone is hung. 
+				// TODO use iterators. Sheesh.
+				while ((!found) && (i < players.size()) ){
+					if (players.get(i).getUserName().equals(u.getPlayerName())){
+						players.get(i).setVotedFor(vote);
+						found = true;
+					} else {
+						i++;
+					}
+				} 
+				if (!found){ // concurrency is a bitch
+					u.broadcast("User not found.");
+				}
 			}
-		} 
-		if (!found){ // concurrency is a bitch
-			u.broadcast("User not found.");
-		}
 		}
 	}
 

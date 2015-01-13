@@ -55,7 +55,7 @@ public class ActionSetupSTF extends Action {
 		menuString += "Choose from the above. Type 'exit' to exit the menu.\r\n";
 
 		PromptForInteger p = new PromptForInteger(u, menuString, 4, 1);
-		while (p.display()) {
+		if (p.display() ) {
 			switch (p.getResult()) {
 			case 1:
 				vote(u);
@@ -71,7 +71,7 @@ public class ActionSetupSTF extends Action {
 				break;
 			}
 		}
-		u.broadcast("\r\nExiting Configuration Menu.\r\n\r\n");
+		u.broadcast("\r\nExiting Spot The Fed Menu.\r\n\r\n");
 	}
 	
 	private void useRole(User u) throws MenuExitException{
@@ -151,7 +151,7 @@ public class ActionSetupSTF extends Action {
 	}
 	
 	public void configMenu(User u) throws MenuExitException {
-		String menuString = "Configure Command Loop Item Action:\r\n";
+		String menuString = "Configure Play STF Item Action:\r\n";
 		menuString += "(01) Configure name \r\n";
 		menuString += "(02) Configure prereq setting\r\n";
 		menuString += "(03) Display structure \r\n";
