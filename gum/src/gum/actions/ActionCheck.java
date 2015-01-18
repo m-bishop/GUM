@@ -34,6 +34,7 @@ public class ActionCheck extends Action {
 		this.setActionName("Check");
 		target = 0;
 		checkSetting = ""; 
+		targetSetting = "";
 		condition = Condition.GREATER;
 		messages = new HashMap<Integer,String>();
 		this.setRange(EffectRange.USER);
@@ -56,6 +57,12 @@ public class ActionCheck extends Action {
 		ItemBase targetItem = this.getHeader().getTargetItem();
 		int tSetting;
 		gum.Area cArea = World.getArea();
+		if (targetSetting == null){
+			targetSetting = "";
+		}
+		if (checkSetting == null){
+			checkSetting = "";
+		}
 		
 		switch (this.getRange()) {	
 		case TARGET: // in this case, the user performs the action on the target.

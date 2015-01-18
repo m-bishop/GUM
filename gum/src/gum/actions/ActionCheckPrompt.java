@@ -29,6 +29,7 @@ public class ActionCheckPrompt extends Action {
 			this.configMenu(u); 
 		}else {
 			this.performMenu(u);
+			this.actionPerformed = false; // done with action. Allow config again. 
 		}
 	}
 

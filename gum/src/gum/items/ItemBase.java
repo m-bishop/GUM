@@ -932,9 +932,9 @@ public class ItemBase extends Item {
 	public boolean configItemPrereqSetting(User u) throws MenuExitException{
 		boolean done = false;
 		int newSettingValue = 0;
-		String settingMenuString =  "This will configure a setting that will be added to the user\r\n";
-		       settingMenuString += "when the user takes this item.\r\n";
-		       settingMenuString += "Currently this Item sets:"+this.getPreReqSettingName()+" to:"+this.getPreReqSettingValue()+".\r\n";
+		String settingMenuString =  "This will configure the prereq setting needed to use this item.\r\n";
+		       settingMenuString += "If this item is a door, the player must have this setting to open it.\r\n";
+		       settingMenuString += "Current prereq:"+this.getPreReqSettingName()+" must be:"+this.getPreReqSettingValue()+".\r\n";
 		
 		u.broadcast(settingMenuString);
 		
