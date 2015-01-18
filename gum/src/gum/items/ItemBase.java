@@ -14,6 +14,7 @@ import gum.actions.item.ActionItemHold;
 import gum.actions.item.ActionItemLook;
 import gum.actions.item.ActionItemOpen;
 import gum.actions.item.ActionItemPut;
+import gum.actions.item.ActionItemRead;
 import gum.actions.item.ActionItemTake;
 import gum.menus.MenuExitException;
 import gum.menus.PromptForBoolean;
@@ -88,6 +89,9 @@ public class ItemBase extends Item {
     public ItemBase() {}
         
     public void init() {
+    	
+    	//TODO The 'init' method can be removed once object serialization is fixed. 
+    	
     	currentAction = null;
     	ActionItemTake takeAction = new ActionItemTake();
     	takeAction.init();
@@ -103,6 +107,8 @@ public class ItemBase extends Item {
     	closeAction.init();
     	ActionItemHold holdAction = new ActionItemHold();
     	holdAction.init();
+    	ActionItemRead readAction = new ActionItemRead();
+    	readAction.init();
     	
     	takeAction.setSuccessMessage("Taken\r\n");
     	takeAction.setFailMessage("You can't take that.\r\n");
@@ -113,6 +119,7 @@ public class ItemBase extends Item {
     	this.getActions().put("open", openAction);
     	this.getActions().put("close", closeAction);
     	this.getActions().put("hold", holdAction);
+    	this.getActions().put("read", readAction);
     	
     }
     
@@ -350,44 +357,46 @@ public class ItemBase extends Item {
     	String menuString =  "Configure item:"+this.getItemName()+"\r\n";
     		   menuString += "(01) Configure Item Name. \r\n";
     		   menuString += "(02) Configure Item Description. \r\n";
-    		   menuString += "(03) Load Item Description from a File. \r\n";
-    		   menuString += "(04) Which Exit is this Item Blocking? \r\n";
-    		   menuString += "(05) Configure Item Effect Setting. \r\n";
-    		   menuString += "(06) Configure Item Prerequisite Setting. \r\n";
-    		   menuString += "(07) Configure Door flag. \r\n";
-    		   menuString += "(08) Configure Container flag. \r\n";
-    		   menuString += "(09) Configure Open flag. \r\n";
-    		   menuString += "(10) Configure auto-close flag. \r\n";
-    		   menuString += "(11) Configure invisibility flag. \r\n";
-    		   menuString += "(12) Configure Stationary flag. \r\n";
-    		   menuString += "(13) Configure infinite flag. \r\n";
-    		   menuString += "(14) Configure items contained in this item. \r\n";
-    		   menuString += "(15) Configure actions contained in this item. \r\n";
-    		   menuString += "(16) Configure reaction to other item. \r\n";
-    		   menuString += "(17) Configure settings contained in this item. \r\n";
-    		   menuString += "(18) Save. \r\n";
+    		   menuString += "(03) Configure Item Filename. \r\n";
+    		   menuString += "(04) Load Item Description from a File. \r\n";
+    		   menuString += "(05) Which Exit is this Item Blocking? \r\n";
+    		   menuString += "(06) Configure Item Effect Setting. \r\n";
+    		   menuString += "(07) Configure Item Prerequisite Setting. \r\n";
+    		   menuString += "(08) Configure Door flag. \r\n";
+    		   menuString += "(09) Configure Container flag. \r\n";
+    		   menuString += "(10) Configure Open flag. \r\n";
+    		   menuString += "(11) Configure auto-close flag. \r\n";
+    		   menuString += "(12) Configure invisibility flag. \r\n";
+    		   menuString += "(13) Configure Stationary flag. \r\n";
+    		   menuString += "(14) Configure infinite flag. \r\n";
+    		   menuString += "(15) Configure items contained in this item. \r\n";
+    		   menuString += "(16) Configure actions contained in this item. \r\n";
+    		   menuString += "(17) Configure reaction to other item. \r\n";
+    		   menuString += "(18) Configure settings contained in this item. \r\n";
+    		   menuString += "(19) Save. \r\n";
     		   
-        PromptForInteger p = new PromptForInteger(u, menuString, 18, 1);
+        PromptForInteger p = new PromptForInteger(u, menuString, 19, 1);
         while (p.display() && !done){
         	switch (p.getResult()){
         		case 1:  configItemName(u); break;
         		case 2:  configItemDescription(u); break;
-        		case 3:  configAddDescriptionFromFile(u); break;  
-        		case 4:  configExitBlocking(u); break;
-        		case 5:  configItemEffectSetting(u); break;
-        		case 6:  configItemPrereqSetting(u); break;
-        		case 7:  configItemDoor(u); break;
-        		case 8: configItemContainer(u); break;
-        		case 9: configItemOpen(u); break;
-        		case 10: configItemAutoClose(u);break;
-        		case 11: configItemInvisible(u);break;
-        		case 12: configItemStationary(u);break;
-        		case 13: configItemInfinite(u);break;
-        		case 14: configItems(u);break;
-        		case 15: configItemActions(u);break;
-        		case 16: configItemReaction(u);break;
-        		case 17: configItemSettings(u);break;
-        		case 18: configItemSave(u);break;
+        		case 3:  configItemFilename(u); break;
+        		case 4:  configAddDescriptionFromFile(u); break;  
+        		case 5:  configExitBlocking(u); break;
+        		case 6:  configItemEffectSetting(u); break;
+        		case 7:  configItemPrereqSetting(u); break;
+        		case 8:  configItemDoor(u); break;
+        		case 9:  configItemContainer(u); break;
+        		case 10: configItemOpen(u); break;
+        		case 11: configItemAutoClose(u);break;
+        		case 12: configItemInvisible(u);break;
+        		case 13: configItemStationary(u);break;
+        		case 14: configItemInfinite(u);break;
+        		case 15: configItems(u);break;
+        		case 16: configItemActions(u);break;
+        		case 17: configItemReaction(u);break;
+        		case 18: configItemSettings(u);break;
+        		case 19: configItemSave(u);break;
         	}
         }
     }
@@ -858,6 +867,20 @@ public class ItemBase extends Item {
     
     //TODO Change all the 'boolean' methods to void unless the return value is used.    
         
+    
+	public void configItemFilename(User u) throws MenuExitException {
+		String menuString = "Enter a new Item filename.\r\n";
+		menuString += "Current item filename:" + this.getFilename() + "\r\n";
+		PromptForString s = new PromptForString(u, menuString);
+		boolean done = s.display();
+
+		if (done) {
+			this.setFilename(s.getResult());
+			u.broadcast("New Item filename:\r\n" + this.getFilename() + "\r\n");
+		} else {
+			u.broadcast("Item filename unchanged. \r\n");
+		}
+	} 
     
 	public void configItemName(User u) throws MenuExitException {
 		String menuString = "Enter a new Item name.\r\n";
