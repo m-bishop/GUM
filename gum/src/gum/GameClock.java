@@ -37,7 +37,7 @@ public class GameClock extends Thread {
     	SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
         while (!this.isTerminate()) {
             try {
-                System.out.println("tick");
+                // System.out.println("tick");
                 // add checks here
                 World.getArea().checkPlayerTimeout();
                 this.processRespawnList();
@@ -45,7 +45,7 @@ public class GameClock extends Thread {
                 World.getArea().processPlayers();
                 cal = Calendar.getInstance();
                 Room.addWorldDescriptor("time", sdf.format(cal.getTime()));
-                System.out.println("Time:"+Room.WorldReplaceMap.get("time"));
+                // System.out.println("Time:"+Room.WorldReplaceMap.get("time"));
                 Thread.sleep(60000); // count by minutes
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -54,7 +54,7 @@ public class GameClock extends Thread {
     }
 
     private void processActionList(){
-        System.out.println("processing Action list.");
+        // System.out.println("processing Action list.");
 		@SuppressWarnings("unchecked") // We know this Vector only contains that type. TODO: change vectors to lists.
 		// Make a copy so that actions can remove themselves without concurrency issues.
 		Vector<ActionTimed> ActionListCopy = (Vector<ActionTimed>) World.getArea().getActionList().clone();
@@ -69,7 +69,7 @@ public class GameClock extends Thread {
     }
     
     private void processRespawnList(){
-        System.out.println("processing respawn list.");
+        //System.out.println("processing respawn list.");
         Enumeration<respawnable> e = World.getArea().getRespawnList().elements();
         while (e.hasMoreElements()){
             respawnable r = (respawnable)e.nextElement();

@@ -527,13 +527,27 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 
 	public Item checkBlocking(String direction) {
 		Item blocking = null;
+		
+		if (direction.equalsIgnoreCase("e")){
+			direction = "east";
+		} else if (direction.equalsIgnoreCase("w")){
+			direction = "west";
+		}else if (direction.equalsIgnoreCase("n")){
+			direction = "north";
+		}else if (direction.equalsIgnoreCase("s")){
+			direction = "south";
+		}else if (direction.equalsIgnoreCase("u")){
+			direction = "up";
+		}else if (direction.equalsIgnoreCase("d")){
+			direction = "down";
+		}
 
 		Enumeration<Item> ei = items.elements();
 		while (ei.hasMoreElements() && blocking == null) {
 			Item item = (Item) ei.nextElement();
 		 //if ((item.getBlocking().equals(direction)) &&
 		//	 (!item.getIsOpen())){
-			if ((item.getBlocking().equals(direction))) {
+			if ((item.getBlocking().equalsIgnoreCase(direction))) {
 				blocking = item;
 			}
 		}

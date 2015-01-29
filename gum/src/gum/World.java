@@ -37,6 +37,7 @@ public class World {
     		decoder.close(); 
     		area.prepForSave();
     		area.initRooms();
+    		System.out.println("Area Loaded. \r\n");
     	}catch (Exception e){
 			e.printStackTrace();
 			area.GlobalChat("Error loading Mud file. Check filename and try again.\r\n");

@@ -860,8 +860,10 @@ public abstract class Mob extends Player implements respawnable, MenuContainer{
     		this.getBattleHandler().removeFromBattle(this);
     		this.setBattleHandler(null); 
     	}
+        System.out.println("Mob killed. Respawn timeout:"+this.getRespawnTimeout());
         if (this.getRespawnTimeout() != 0){ // 0 means do not respawn this mob.
             World.getArea().addRespawn(this);
+            System.out.println("Added Mob:"+this.getPlayerName()+" to respawn.");
         }
     }
     

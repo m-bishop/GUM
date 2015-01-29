@@ -25,6 +25,7 @@ public class ActionItemRead extends Action {
 	public boolean doAction(ActionHeader header) {
 		Player player = header.getPlayer();
 		ItemBase item = (ItemBase)header.getItem();
+		StringBuilder buffer = new StringBuilder();
 		
 		try {
 	        File file = new File(item.getFilename());
@@ -33,9 +34,10 @@ public class ActionItemRead extends Action {
 				
 					scanner = new Scanner(file);
 					while (scanner.hasNextLine()) {
-		            	
-		            	player.broadcast(scanner.nextLine());
+		            	buffer.append(scanner.nextLine()+"\r\n");
+		            	//player.broadcast(scanner.nextLine()+"\r\n");
 					}
+					player.broadcast(buffer.toString());
 				} catch (Exception e) {
 					
 					e.printStackTrace();
