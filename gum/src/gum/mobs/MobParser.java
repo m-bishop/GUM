@@ -48,7 +48,7 @@ public class MobParser extends UserParser {
                    // figure this out...where does this belong?
                    // maybe make the mob automatically do this based on some
                    // kind of measurement of violence?
-                	System.out.println(mob.getPlayerName()+" Called start fight.\r\n");
+                	//System.out.println(mob.getPlayerName()+" Called start fight.\r\n");
             		Player victim = mob.getCurrentRoom().getRandomPlayer(mob);
             		if (victim != null){
             		      this.parsePlayerCommand(mob, "attack " + victim.getPlayerName());

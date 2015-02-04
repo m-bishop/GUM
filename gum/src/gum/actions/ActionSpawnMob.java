@@ -1,6 +1,6 @@
 package gum.actions;
 
-import gum.Player;
+
 import gum.User;
 import gum.menus.MenuExitException;
 import gum.menus.PromptForInteger;
@@ -21,16 +21,22 @@ public class ActionSpawnMob extends Action {
 
 	@Override
 	public boolean doAction(ActionHeader actionHeader) {
-		Player target = actionHeader.getTargetPlayer();
+	/*
+	 * This wasn't being used and needs a rewrite. It should just take a filename in, and just load the mob from a file.
+	 */
+		
+		
+		
+		//	Player target = actionHeader.getTargetPlayer();
 		//create a mob by telling the mob to respawn in the player room.
-		if (createdMob.getRespawnCopy() == null){
-			createdMob.respawnInit();
-		}
-		createdMob.setRespawnRoom(target.getCurrentRoom());
-		createdMob.respawn();
-		target.getCurrentRoom().chat(this.getSuccessMessage());
-		createdMob.setRespawnRoom(null);
-		createdMob.setRespawnCopy(null);// don't want the user holding on to this.
+	//	if (createdMob.getRespawnCopy() == null){
+	//		createdMob.respawnInit();
+	///	}
+	//	createdMob.setRespawnRoom(target.getCurrentRoom());
+	//	createdMob.respawn();
+	//	target.getCurrentRoom().chat(this.getSuccessMessage());
+	//	createdMob.setRespawnRoom(null);
+	//	createdMob.setRespawnCopy(null);// don't want the user holding on to this.
 										
 		return true;
 	}
@@ -64,14 +70,14 @@ public class ActionSpawnMob extends Action {
 				break;
 			case 4:
 				createdMob = Mob.configAddMob(u);
-				createdMob.setRespawnCopy(null); // don't want items holding these binary copies. 
-				createdMob.setRespawnRoom(null);
+		//		createdMob.setRespawnCopy(null); // don't want items holding these binary copies. 
+		//		createdMob.setRespawnRoom(null);
 				break;
 			case 5:
 				if (createdMob == null){
 					createdMob = Mob.configAddMob(u);
-					createdMob.setRespawnCopy(null); // don't want items holding these binary copies. 
-					createdMob.setRespawnRoom(null);
+		//			createdMob.setRespawnCopy(null); // don't want items holding these binary copies. 
+		//			createdMob.setRespawnRoom(null);
 				}
 				if (createdMob != null){
 					createdMob.menu(u);

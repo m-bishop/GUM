@@ -35,6 +35,8 @@ public class World {
     		area.setRooms(null);
     		area = (Area)decoder.readObject();
     		decoder.close(); 
+    		decoder = null;
+    		System.gc();
     		area.prepForSave();
     		area.initRooms();
     		System.out.println("Area Loaded. \r\n");

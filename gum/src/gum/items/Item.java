@@ -5,7 +5,10 @@ import gum.Player;
 import gum.User;
 import gum.menus.MenuContainer;
 
+import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.util.StringTokenizer;
 
@@ -23,6 +26,9 @@ import java.util.StringTokenizer;
  */
 abstract public class Item implements Cloneable, MenuContainer, ItemContainer{
 
+  
+    private ItemContainer itemContainer = null;
+	
     public Item(){}
 
     abstract public void init(); 
@@ -87,13 +93,50 @@ abstract public class Item implements Cloneable, MenuContainer, ItemContainer{
     abstract public void setIsDoor(boolean setting);
     abstract public void setIsOpen(boolean setting);
     abstract public void setIsContainer(boolean setting);
-    abstract public void setItemContainer(ItemContainer itemContainer);
+    
     
     public abstract void setSetting(String setting, int value);
     public abstract int getSetting(String setting);
 
+    public ItemContainer getItemContainer() {
+    	return itemContainer;
+    }
+
+    public void setItemContainer(ItemContainer itemContainer) {
+    	this.itemContainer = itemContainer;
+    }
 
     abstract public void attack(Player p1, Player p2);
+    
+    public Item copy(){
+ 	   Item result = null;
+ 	   
+ 	   /* proper serialization method
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    ObjectOutputStream oos = new ObjectOutputStream(os);
+    oos.writeObject(this);
+    oos.flush();
+    ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+    ObjectInputStream decoder = new ObjectInputStream(is);
+    */
+ 	   
+ 		ItemContainer temp = this.getItemContainer();
+    		this.setItemContainer(null);   
+ 		ByteArrayOutputStream os = new ByteArrayOutputStream();  
+    		XMLEncoder encoder = new XMLEncoder(os);
+    		encoder.writeObject(this);
+    	
+    		encoder.close();
+        ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+      
+        XMLDecoder decoder = new XMLDecoder(is);
+        result = (Item)decoder.readObject();
+        decoder.close();
+
+        this.setItemContainer(temp);
+ 	  
+ 	   return result;
+    }
     
     public void save(String fileName){
     	try{

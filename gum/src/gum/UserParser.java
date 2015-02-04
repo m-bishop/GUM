@@ -167,7 +167,7 @@ public class UserParser {
 		msg = msg.replace("a ", "");
 		msg = msg.replace("an ", "");
 		msg = msg.replace("to ", "");
-		System.out.println("Message to parse:"+msg);
+		//System.out.println("Message to parse:"+msg);
 		
 		//if (player instanceof User){		
 			found = UserParser.parsePlayerAction(new StringTokenizer(msg, " "),player);

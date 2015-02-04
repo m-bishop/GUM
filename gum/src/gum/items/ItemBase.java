@@ -1,5 +1,6 @@
 package gum.items;
 
+
 import gum.ItemContainer;
 import gum.ObjectFactory;
 import gum.Player;
@@ -22,10 +23,7 @@ import gum.menus.PromptForInteger;
 import gum.menus.PromptForString;
 import gum.mobs.Mob;
 
-import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -77,8 +75,7 @@ public class ItemBase extends Item {
     private Action itemReaction = null;
     
     
-    //hold on to a pointer to whatever is containing this item
-    private ItemContainer itemContainer = null;
+
 	
     private Vector<Item> items = new Vector<Item>();
     private HashMap<String,Action> actions = new HashMap<String,Action>();
@@ -1284,6 +1281,8 @@ public class ItemBase extends Item {
 //        return null;
 //    }
 
+
+    
    public boolean take(Player p){
 	   boolean result = false;
 	   
@@ -1298,31 +1297,11 @@ public class ItemBase extends Item {
            } else {
         	        
         	   try {
-        		   /* proper serialization method
-        	   ByteArrayOutputStream os = new ByteArrayOutputStream();
-               ObjectOutputStream oos = new ObjectOutputStream(os);
-               oos.writeObject(this);
-               oos.flush();
-               ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-               ObjectInputStream decoder = new ObjectInputStream(is);
-               */
-        		ItemContainer temp = this.getItemContainer();
-           		this.setItemContainer(null);   
-        		ByteArrayOutputStream os = new ByteArrayOutputStream();  
-           		XMLEncoder encoder = new XMLEncoder(os);
-           		encoder.writeObject(this);
-           	
-           		encoder.close();
-               ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-             
-               XMLDecoder decoder = new XMLDecoder(is);
-               Item new_item = (Item)decoder.readObject();
-               decoder.close();
-     
-               this.setItemContainer(temp);
+
+        	   Item newItem = this.copy();
                
-               new_item.setIsInfinite(false);
-               p.addToInventory(new_item);
+               newItem.setIsInfinite(false);
+               p.addToInventory(newItem);
               
    			
 			} catch (Exception e) {
@@ -1472,14 +1451,6 @@ public Vector<Item> getItems() {
 }
 public void setItems(Vector<Item> items) {
 	this.items = items;
-}
-
-public ItemContainer getItemContainer() {
-	return itemContainer;
-}
-
-public void setItemContainer(ItemContainer itemContainer) {
-	this.itemContainer = itemContainer;
 }
 
 public HashMap<String, Action> getActions() {

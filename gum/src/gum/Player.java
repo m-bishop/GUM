@@ -594,7 +594,7 @@ public abstract class Player extends Thread implements ItemContainer  {
 
         while (e.hasMoreElements() && !Found){
              Item item = (Item)e.nextElement();
-             System.out.println("person get item:"+item.getItemName());
+             // System.out.println("person get item:"+item.getItemName());
              if (item.getItemName().equals(itemName)){
                  o_item = item;
                  Found = true;
@@ -611,7 +611,7 @@ public abstract class Player extends Thread implements ItemContainer  {
 
         while (e.hasMoreElements() && !Found){
              Item item = (Item)e.nextElement();
-             System.out.println("person get item:"+item.getItemName());
+             // System.out.println("person get item:"+item.getItemName());
              if (item.getItemName().equals(itemName)){
             	 if (pos <= 1){
             		 o_item = item;

@@ -17,10 +17,7 @@ import gum.menus.MenuExitException;
 import gum.menus.PromptForInteger;
 import gum.menus.PromptForString;
 
-import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,9 +45,15 @@ public abstract class Mob extends Player implements respawnable, MenuContainer{
     private String currentDirection; // the direction the mob is facing.
     protected MobParser parser = new MobParser();
     protected String filename;
+    
+    //respawn vars
     private Room respawnRoom;
     private int respawnTimeout;
-    private byte[] respawnCopy = null;
+    private int respawnTimeoutCopy;
+    private Item respawnHolding;
+    //private byte[] respawnCopy = null;
+    
+	private HashMap<String, Integer> RespawnSettings = new HashMap<String, Integer>(); // setting map
     
     private HashMap<String,Action> actions = new HashMap<String,Action>();
 
@@ -89,28 +92,62 @@ public abstract class Mob extends Player implements respawnable, MenuContainer{
 		return true;
 	}
     
-    public void respawnInit(){
+
+	public void respawnInit(){
+		this.setRespawnItems(null);
+		this.setRespawnSettings(null);
+    	
+    	RespawnSettings = new HashMap<String, Integer>(this.getSettings());
+    	
+    	this.setRespawnTimeoutCopy(this.getRespawnTimeout());
+    	
+   // 	for(Map.Entry<String, Integer> entry : this.getSettings().entrySet()){
+   //         RespawnSettings.put(new String(entry.getKey()), new Integer(entry.getValue()));
+   //     }
+    	
+    	RespawnItems =  new Vector<Item>();
+    	for (Item i : this.getItems()){
+    		Item newItem = i.copy();
+    		RespawnItems.add(newItem);
+    		if (this.getRightHand() == i){
+    			this.respawnHolding = newItem;
+    		}
+    	}
+    	
+
+        
+    	/*
     	ByteArrayOutputStream os = new ByteArrayOutputStream();
         XMLEncoder encoder = new XMLEncoder(os);
         encoder.writeObject(this);
         encoder.close();
         respawnCopy = os.toByteArray();
+        */
     }
     
     public void respawn(){
-        //this.loadFromFile(this.filename);
-    	if (respawnCopy != null){
-    		ByteArrayInputStream is = new ByteArrayInputStream(respawnCopy);
-    		XMLDecoder decoder = new XMLDecoder(is);
-    		Mob newMob = (Mob)decoder.readObject();
-    		newMob.setRespawnCopy(respawnCopy);
-    		newMob.setRespawnRoom(this.getRespawnRoom());
-    		this.getRespawnRoom().addPlayer((Mob)newMob);
-    		newMob.start();
+    	this.setItems(this.getRespawnItems());
+    	this.setSettings(this.getRespawnSettings());
+    	this.setRespawnTimeout(this.getRespawnTimeoutCopy());
+    	this.setRightHand(respawnHolding);
+    	this.respawnInit();
+    	this.getRespawnRoom().addPlayer(this);
+    	this.dead = false;
+    	//this.start();
+    	
+    	//this.loadFromFile(this.filename);
+//    	if (respawnCopy != null){
+//    		ByteArrayInputStream is = new ByteArrayInputStream(respawnCopy);
+//    		XMLDecoder decoder = new XMLDecoder(is);
+//    		Mob newMob = (Mob)decoder.readObject();
+//    		newMob.setRespawnCopy(respawnCopy);
+//    		newMob.setRespawnRoom(this.getRespawnRoom());
+//    		this.getRespawnRoom().addPlayer((Mob)newMob);
+//    		newMob.start();
     		//this.dead = false;
-    	} else {
-    		System.err.println("Mob respawn copy not initialized!");
-    	}
+//    	} else {
+//    		System.err.println("Mob respawn copy not initialized!");
+ //   	}
     }
 
     public void process(){
@@ -129,18 +166,19 @@ public abstract class Mob extends Player implements respawnable, MenuContainer{
 
             while (!dead || this.getRespawnTimeout() > 0){
                 Thread.sleep(1000);
+                if (!dead){
                 //System.out.println("Running:"+this.getPlayerName());
-                if (!this.getFightingFlag() && !dead){ // if you aren't fighting, pick a fight
+                if (!this.getFightingFlag()){ // if you aren't fighting, pick a fight
                     this.startFight();
                 }
-                if (!this.getFightingFlag() && !dead){ // if the mob still isn't fighting
+                if (!this.getFightingFlag()){ // if the mob still isn't fighting
                     if (st.hasMoreTokens()){
                         commandLine = st.nextToken();
                     }
                     // System.out.println("mob command:"+commandLine);
                     //commandLine = parser.removeBackspace(commandLine);
                     //System.out.println("sending mob command:"+commandLine);
-                    System.out.println("Parsing command for Mob:"+this.getPlayerName()+" command:"+commandLine+"\r\n");
+                    //System.out.println("Parsing command for Mob:"+this.getPlayerName()+" command:"+commandLine+"\r\n");
                     parser.ParseMobCommand(this, commandLine);
 
                     if (!st.hasMoreElements()) {
@@ -149,6 +187,7 @@ public abstract class Mob extends Player implements respawnable, MenuContainer{
                     }
                 } else {
                     this.fight();
+                }
                 }
             }
         } catch (Exception ex) {
@@ -277,6 +316,30 @@ public abstract class Mob extends Player implements respawnable, MenuContainer{
 	public void setRespawnTimeout(int respawnTimeout) {
 		this.respawnTimeout = respawnTimeout;
 	}
+	
+    public int getRespawnTimeoutCopy() {
+		return respawnTimeoutCopy;
+	}
+
+	public void setRespawnTimeoutCopy(int respawnTimeoutCopy) {
+		this.respawnTimeoutCopy = respawnTimeoutCopy;
+	}
+	private Vector<Item> RespawnItems = new Vector<Item>(); // all items
+    public Vector<Item> getRespawnItems() {
+		return RespawnItems;
+	}
+
+	public void setRespawnItems(Vector<Item> respawnItems) {
+		RespawnItems = respawnItems;
+	}
+
+	public HashMap<String, Integer> getRespawnSettings() {
+		return RespawnSettings;
+	}
+
+	public void setRespawnSettings(HashMap<String, Integer> respawnSettings) {
+		RespawnSettings = respawnSettings;
+	}
 
 	public void broadcast(String message) {
 		System.out.println("Mob heard:"+message);
@@ -303,13 +366,7 @@ public abstract class Mob extends Player implements respawnable, MenuContainer{
 		}
 	}
 	
-    public byte[] getRespawnCopy() {
-		return respawnCopy;
-	}
 
-	public void setRespawnCopy(byte[] respawnCopy) {
-		this.respawnCopy = respawnCopy;
-	}
 
 	public void check(Player player){
         String checkOutput = "";
@@ -756,7 +813,8 @@ public abstract class Mob extends Player implements respawnable, MenuContainer{
 */
     public void save(String fileName){
     	try{
-    		respawnCopy = null;
+    		this.setRespawnItems(null);
+    		this.setRespawnSettings(null);
     		respawnRoom = null;
     		FileOutputStream os = new FileOutputStream(fileName);
     		XMLEncoder encoder = new XMLEncoder(os);

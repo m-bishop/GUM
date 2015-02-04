@@ -578,6 +578,7 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 	}
 	
     public void respawnInit(){
+    	
     	ByteArrayOutputStream os = new ByteArrayOutputStream();
         XMLEncoder encoder = new XMLEncoder(os);
         encoder.writeObject(this.getItems());
@@ -856,12 +857,14 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 				p.quit();
 				//players.remove(p);
 			}else {
-				((Mob)p).setRespawnCopy(null);
+				((Mob)p).setRespawnItems(null);
+				((Mob)p).setRespawnSettings(null);
 			}
 		}
 	}
 
 	public Player getRandomPlayer(Player p) {
+		synchronized (players){
 		Enumeration<Player> e = players.elements();
 		Vector<Player> pv = new Vector<Player>(); // vector to hold possible
 													// result players
@@ -880,9 +883,10 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 		}
 		else if (pv.size() > 0) {
 			int roll = random.nextInt(pv.size()); // random number
-			r = (Player) pv.elementAt(roll-1);
+			r = (Player) pv.elementAt(roll);
 		}
 		return r;
+		}
 	}
 
 	public void echo(String msg, int str) {
