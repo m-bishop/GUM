@@ -1,9 +1,9 @@
 package gum.actions;
 
-import java.util.Random;
+
 import java.util.Vector;
 
-import gum.ObjectFactory;
+
 import gum.STFPlayer;
 import gum.User;
 import gum.World;
@@ -74,11 +74,20 @@ public class ActionProcessSTF extends Action {
 	private void clearRound(){
 		STFPlayer currentPlayer;
 		
+		processRoles();
+		if (isGameOver()){
+			World.getArea().getActionList().remove(parent);
+			World.getArea().GlobalChat("Spot the Fed has ended!  \r\n");
+		} else {	
+			roundTimer = (minutesPerPerson * players.size());
+			World.getArea().GlobalChat("Starting new round. This round will last "+roundTimer+" minutes.");
+		}
 		for (int i = 0; i < players.size() ; i++){
 			currentPlayer = players.get(i);
 			currentPlayer.setVotedFor("None");
 			currentPlayer.setVotesAgainst(0);
 		}
+		
 	}
 	
 	private void processVotes(){
@@ -103,17 +112,17 @@ public class ActionProcessSTF extends Action {
 	
 	public void hangPlayer(int hungPlayer){
 		STFPlayer player = players.get(hungPlayer);
-		World.getArea().GlobalChat(player.getUserName() + " was Outed! Here is who they REALLY are!\r\n"+ player.getRevealText());
-		players.remove(hungPlayer);
-		processRoles();
-		if (isGameOver()){
-			World.getArea().getActionList().remove(parent);
-			World.getArea().GlobalChat("Spot the Fed has ended!  \r\n");
-		} else {	
-			roundTimer = (minutesPerPerson * players.size());
-			World.getArea().GlobalChat("Starting new round. This round will last "+roundTimer+" minutes.");
-			clearRound();
+		
+		String role = "Agent";
+		if (player.getPlayerRole() != STFPlayer.role.AGENT){
+			role = "Punk";
 		}
+		if (player != null){
+			players.remove(player);
+			World.getArea().GlobalChat(player.getUserName() + " has been voted out! Turns out they're a "+ role + ".\r\n");
+		    this.notifyAll(player.getUserName() + " has been voted out! Turns out they're a "+ role + ".\r\n");
+		}
+		clearRound();
 	}
 	
 	public void processRoles(){
@@ -137,8 +146,15 @@ public class ActionProcessSTF extends Action {
 					if (!cPlayer.getTarget().equals(protectedPlayer)){
 						removedPlayer = getPlayerByName(cPlayer.getTarget());
 						if (removedPlayer != null){
+						String role = "Agent";
+						if (removedPlayer.getPlayerRole() != STFPlayer.role.AGENT){
+							role = "Punk";
+						}
+						if (removedPlayer != null){
 							players.remove(removedPlayer);
-							World.getArea().GlobalChat(removedPlayer.getUserName() + " was Outed! Here is who they REALLY are!\r\n"+ removedPlayer.getRevealText());
+							World.getArea().GlobalChat(removedPlayer.getUserName() + " has been identified as a suspect by Agents! Turns out they're a "+ role + ".\r\n");
+						    this.notifyAll(removedPlayer.getUserName() + " has been identified as a suspect by Agents! Turns out they're a "+ role + ".\r\n");
+						}
 						}
 					}
 				break;
@@ -146,8 +162,29 @@ public class ActionProcessSTF extends Action {
 					if (!cPlayer.getTarget().equals(protectedPlayer)){
 						removedPlayer = getPlayerByName(cPlayer.getTarget());
 						if (removedPlayer != null){
+						String role = "Agent";
+						if (removedPlayer.getPlayerRole() != STFPlayer.role.AGENT){
+							role = "Punk";
+						}
+						if (removedPlayer != null){
 							players.remove(removedPlayer);
-							World.getArea().GlobalChat(removedPlayer.getUserName() + " was Outed! Here is who they REALLY are!\r\n"+ removedPlayer.getRevealText());
+							World.getArea().GlobalChat(removedPlayer.getUserName() + " was outed by a hacker! Turns out they're a "+ role + ".\r\n");
+							this.notifyAll(removedPlayer.getUserName() + " was outed by a hacker! Turns out they're a "+ role + ".\r\n");
+						}
+						}
+					}
+				break;
+				case INVESTIGATOR:
+					if (!cPlayer.getTarget().equals(protectedPlayer)){
+						removedPlayer = getPlayerByName(cPlayer.getTarget());
+						if (removedPlayer != null){
+						String role = "Agent";
+						if (removedPlayer.getPlayerRole() != STFPlayer.role.AGENT){
+							role = "Punk";
+						}
+						if (removedPlayer != null){
+							cPlayer.setMessages(cPlayer.getMessages()+"Your investigation revealed that "+removedPlayer.getUserName()+" is a "+role+".\r\n");
+						}
 						}
 					}
 				break;
@@ -160,10 +197,12 @@ public class ActionProcessSTF extends Action {
 	}
 	
 	public void processMissedVote(){
-		World.getArea().GlobalChat("Since no one could agree, we'll just out someone at random!");
-		Random random = ObjectFactory.getRandObject();	
-		int randomPlayer = random.nextInt(players.size());
-		hangPlayer(randomPlayer);
+		World.getArea().GlobalChat("Since no one could agree, we'll just move on...");
+		clearRound();
+		// I'm on the fence about hanging someone at random.
+		// Random random = ObjectFactory.getRandObject();	
+		// int randomPlayer = random.nextInt(players.size());
+		// hangPlayer(randomPlayer);
 	} 
 	
 	@Override
@@ -201,6 +240,14 @@ public class ActionProcessSTF extends Action {
 	public void menu(User u) throws MenuExitException {
 		u.broadcast("This Action is not user configurable.");
 		
+	}
+	
+	public void notifyAll(String note){
+		for (int i = 0; i < players.size() ; i++){
+			STFPlayer player = players.get(i);
+			String messages = player.getMessages();
+			player.setMessages(messages+note);
+		}
 	}
 	
 	public STFPlayer getPlayer(User u){

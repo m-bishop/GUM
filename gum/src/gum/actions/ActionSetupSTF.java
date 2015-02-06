@@ -16,7 +16,7 @@ import gum.menus.PromptForString;
 public class ActionSetupSTF extends Action {
 
 	private boolean actionPerformed; // are we currently performing this action?
-	private int minutesPerPerson;
+	private int minutesPerPerson = 1;
 	private  Vector<STFPlayer> newSTFPlayers = new Vector<STFPlayer>();
 
 	public ActionSetupSTF() {
@@ -67,7 +67,8 @@ public class ActionSetupSTF extends Action {
 				useRole(u);
 				break;
 			case 4:
-				u.broadcast("Notifications are not yet implemented!");
+				STFPlayer player = game.getPlayer(u);
+				u.broadcast(player.getMessages());
 				break;
 			}
 		}
@@ -85,17 +86,22 @@ public class ActionSetupSTF extends Action {
 			
 			switch (player.getPlayerRole()){
 			case PROTECTOR:
-				menuString = "Who do you want to protect this round: \r\n";
+				menuString = "You can't hack, but you can run interfierence. Who do you want to protect this round: \r\n";
 			break;
 			case AGENT:
-				menuString = "Who do you want to investigate this round: \r\n";
+				menuString = "You're an FBI Agent. Who do you want to investigate this round: \r\n";
 			break;
 			case ASSASIN:
-				menuString = "Who do you want to out this round: \r\n";
+				menuString = "You're the hacker. You can out anyone. Who do you want to out this round: \r\n";
 			break;
 			case PUNK:
 				menuString = "You're just a punk. Who do you want to hate this round: \r\n";
 			break;
+			case INVESTIGATOR:
+				menuString = "You can tell a punk from a fed with a little investigating. Who do you want to investigate: \r\n";
+				break;
+			default:
+				break;
 			}
 			@SuppressWarnings("unchecked")
 			Vector<STFPlayer> playerList = (Vector<STFPlayer>) game.getPlayers().clone();
@@ -328,7 +334,10 @@ public class ActionSetupSTF extends Action {
 		}
 		// set a protector and assasin
 		newSTFPlayers.get(fedCount).setPlayerRole(STFPlayer.role.PROTECTOR);
-		newSTFPlayers.get(fedCount+1).setPlayerRole(STFPlayer.role.ASSASIN);
+		newSTFPlayers.get(fedCount+1).setPlayerRole(STFPlayer.role.INVESTIGATOR);
+		if (newSTFPlayers.size() > 9){
+			newSTFPlayers.get(fedCount+2).setPlayerRole(STFPlayer.role.ASSASIN);
+		}
 		// re-shuffle so people don't realize the players at the top of the list are most important.
 		Collections.shuffle(newSTFPlayers); 
 	}
