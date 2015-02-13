@@ -307,12 +307,11 @@ public class ActionSetupSTF extends Action {
         		result = (ActionProcessSTF) a.getTimedAction();	
         	}
         }
-		
-		
 		return result;	
 	}
 	
 	private void setRoles(){	
+		String agentList = "Agent List: ";
 		// set everyone to a punk
 		for (int i = 0; i < newSTFPlayers.size() ; i++){
 			newSTFPlayers.get(i).setPlayerRole(STFPlayer.role.PUNK);
@@ -331,6 +330,14 @@ public class ActionSetupSTF extends Action {
 			
 			cPlayer.setFed(true);
 			cPlayer.setPlayerRole(STFPlayer.role.AGENT);	
+			agentList = agentList + cPlayer.getUserName() + " ";
+		}
+		for (int i = 0; i <= fedCount-1 ; i++){
+			STFPlayer cPlayer;
+			cPlayer = newSTFPlayers.get(i);
+			String messages = cPlayer.getMessages();
+			
+			cPlayer.setMessages(messages + agentList + "\r\n");
 		}
 		// set a protector and assasin
 		newSTFPlayers.get(fedCount).setPlayerRole(STFPlayer.role.PROTECTOR);

@@ -119,15 +119,15 @@ public class ActionProcessSTF extends Action {
 		}
 		if (player != null){
 			players.remove(player);
-			World.getArea().GlobalChat(player.getUserName() + " has been voted out! Turns out they're a "+ role + ".\r\n");
-		    this.notifyAll(player.getUserName() + " has been voted out! Turns out they're a "+ role + ".\r\n");
+			World.getArea().GlobalChat("%YELLOW " + player.getUserName() + " has been voted out! Turns out they're a "+ role + ".\r\n");
+		    this.notifyAll("%YELLOW " + player.getUserName() + " has been voted out! Turns out they're a "+ role + ".\r\n");
 		}
 		clearRound();
 	}
 	
 	public void processRoles(){
 		String protectedPlayer = "";
-		STFPlayer cPlayer,removedPlayer;
+		STFPlayer cPlayer,targetPlayer;
 		@SuppressWarnings("unchecked")
 		Vector<STFPlayer> playerList = (Vector<STFPlayer>) players.clone();
 		
@@ -140,51 +140,67 @@ public class ActionProcessSTF extends Action {
 		for (int i = 0; i < playerList.size() ; i++){
 			
 				cPlayer = playerList.get(i);
+				targetPlayer = getPlayerByName(cPlayer.getTarget());
 				switch (cPlayer.getPlayerRole()){
 
 				case AGENT:
 					if (!cPlayer.getTarget().equals(protectedPlayer)){
-						removedPlayer = getPlayerByName(cPlayer.getTarget());
-						if (removedPlayer != null){
+						
+						if (targetPlayer != null){
 						String role = "Agent";
-						if (removedPlayer.getPlayerRole() != STFPlayer.role.AGENT){
+						if (targetPlayer.getPlayerRole() != STFPlayer.role.AGENT){
 							role = "Punk";
 						}
-						if (removedPlayer != null){
-							players.remove(removedPlayer);
-							World.getArea().GlobalChat(removedPlayer.getUserName() + " has been identified as a suspect by Agents! Turns out they're a "+ role + ".\r\n");
-						    this.notifyAll(removedPlayer.getUserName() + " has been identified as a suspect by Agents! Turns out they're a "+ role + ".\r\n");
+						if (targetPlayer != null){
+							players.remove(targetPlayer);
+							World.getArea().GlobalChat("%RED " + targetPlayer.getUserName() + " has been identified as a suspect by Agents! Turns out they're a "+ role + ".\r\n");
+						    this.notifyAll("%RED " + targetPlayer.getUserName() + " has been identified as a suspect by Agents! Turns out they're a "+ role + ".\r\n");
 						}
+						}
+					} else {
+						if (targetPlayer != null){
+							String messages = cPlayer.getMessages();
+							cPlayer.setMessages(messages+"%RED Your investigation of "+targetPlayer.getUserName()+" is caught up in red tape.\r\n");
 						}
 					}
 				break;
 				case ASSASIN:
 					if (!cPlayer.getTarget().equals(protectedPlayer)){
-						removedPlayer = getPlayerByName(cPlayer.getTarget());
-						if (removedPlayer != null){
+						
+						if (targetPlayer != null){
 						String role = "Agent";
-						if (removedPlayer.getPlayerRole() != STFPlayer.role.AGENT){
+						if (targetPlayer.getPlayerRole() != STFPlayer.role.AGENT){
 							role = "Punk";
 						}
-						if (removedPlayer != null){
-							players.remove(removedPlayer);
-							World.getArea().GlobalChat(removedPlayer.getUserName() + " was outed by a hacker! Turns out they're a "+ role + ".\r\n");
-							this.notifyAll(removedPlayer.getUserName() + " was outed by a hacker! Turns out they're a "+ role + ".\r\n");
+						if (targetPlayer != null){
+							players.remove(targetPlayer);
+							World.getArea().GlobalChat("%RED " + targetPlayer.getUserName() + " was outed by a hacker! Turns out they're a "+ role + ".\r\n");
+							this.notifyAll("%RED " + targetPlayer.getUserName() + " was outed by a hacker! Turns out they're a "+ role + ".\r\n");
 						}
+						}
+					}else {
+						if (targetPlayer != null){
+							String messages = cPlayer.getMessages();
+							cPlayer.setMessages(messages+"%RED Your attempts to out "+targetPlayer.getUserName()+" failed.\r\n");
 						}
 					}
 				break;
 				case INVESTIGATOR:
 					if (!cPlayer.getTarget().equals(protectedPlayer)){
-						removedPlayer = getPlayerByName(cPlayer.getTarget());
-						if (removedPlayer != null){
+						
+						if (targetPlayer != null){
 						String role = "Agent";
-						if (removedPlayer.getPlayerRole() != STFPlayer.role.AGENT){
+						if (targetPlayer.getPlayerRole() != STFPlayer.role.AGENT){
 							role = "Punk";
 						}
-						if (removedPlayer != null){
-							cPlayer.setMessages(cPlayer.getMessages()+"Your investigation revealed that "+removedPlayer.getUserName()+" is a "+role+".\r\n");
+						if (targetPlayer != null){
+							cPlayer.setMessages(cPlayer.getMessages()+ "%BLUE " +"Your investigation revealed that "+targetPlayer.getUserName()+" is a "+role+".\r\n");
 						}
+						}
+					}else {
+						if (targetPlayer != null){
+							String messages = cPlayer.getMessages();
+							cPlayer.setMessages(messages+"%RED Your investigation of "+targetPlayer.getUserName()+" failed.\r\n");
 						}
 					}
 				break;
@@ -214,13 +230,13 @@ public class ActionProcessSTF extends Action {
 		
 		switch (roundTimer){
 			case 5:
-				World.getArea().GlobalChat("Only five minutes left to vote!");
+				World.getArea().GlobalChat("%GREEN Only five minutes left to vote!");
 			break;
 			case 2:
-				World.getArea().GlobalChat("Only two minutes left to vote!");
+				World.getArea().GlobalChat("%GREEN Only two minutes left to vote!");
 			break;
 			case 1:
-				World.getArea().GlobalChat("Only one minute left to vote!");
+				World.getArea().GlobalChat("%GREEN Only one minute left to vote!");
 			break;
 			case 0:
 				processMissedVote();
