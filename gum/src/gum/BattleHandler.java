@@ -60,7 +60,22 @@ public class BattleHandler extends Thread {
 
 	public boolean verifyFighters(Player p1, Player p2) {
 		boolean result = true;
-		if ((p1 instanceof User) && (p2 instanceof User)) {
+		
+		if (p1 instanceof User){
+			if (((User) p1).inMenu){
+				result = false;
+			}
+		}
+		
+		if (p2 instanceof User){
+			if (((User) p2).inMenu){
+				result = false;
+			}
+		}
+		
+		if (!result){
+			// this would be false if a mob attacked a player while in a menu, which shouldn't be allowed.
+		} else if ((p1 instanceof User) && (p2 instanceof User)) {
 			p1.broadcast("You cannot attack another player!\r\n");
 			result = false;
 		}else if (p1 == p2){

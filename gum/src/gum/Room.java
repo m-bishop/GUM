@@ -849,6 +849,16 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 		}
 	}
 
+	public void debugChat(String message) {
+		Enumeration<Player> e = players.elements();
+		while (e.hasMoreElements()) {
+			Player p = (Player) e.nextElement();
+			if (p.getSetting("debug") > 0){
+				p.broadcast(message);
+			}
+		}
+	}
+	
 	public void prepForSave() {
 		Enumeration<Player> e = players.elements();
 		while (e.hasMoreElements()) {
@@ -863,12 +873,14 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 		}
 	}
 
-	public Player getRandomPlayer(Player p) {
+	public User getRandomPlayer(Player p) {
 		synchronized (players){
 		Enumeration<Player> e = players.elements();
 		Vector<Player> pv = new Vector<Player>(); // vector to hold possible
 													// result players
-		Player t, r = null;
+		Player t = null;
+		User r = null;
+		
 		while (e.hasMoreElements()) {
 			t = (Player) e.nextElement();
 			if ((t != p) && (t instanceof User)) {
@@ -879,11 +891,11 @@ public class Room implements respawnable, MenuContainer,ItemContainer {
 			}
 		}
 		if (pv.size() == 1){
-			r = (Player) pv.elementAt(0);
+			r = (User) pv.elementAt(0);
 		}
 		else if (pv.size() > 0) {
 			int roll = random.nextInt(pv.size()); // random number
-			r = (Player) pv.elementAt(roll);
+			r = (User) pv.elementAt(roll);
 		}
 		return r;
 		}

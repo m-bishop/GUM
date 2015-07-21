@@ -26,6 +26,7 @@ import gum.actions.player.ActionPlayerMission;
 import gum.actions.player.ActionPlayerMove;
 import gum.actions.player.ActionPlayerPut;
 import gum.actions.player.ActionPlayerQuit;
+import gum.actions.player.ActionPlayerSetSetting;
 import gum.actions.player.ActionPlayerStats;
 import gum.actions.player.ActionPlayerTake;
 import gum.actions.player.ActionPlayerTalk;
@@ -131,6 +132,7 @@ public abstract class Player extends Thread implements ItemContainer  {
         playerCommands.put("configure", new ActionPlayerConfig());
         playerCommands.put("map", new ActionPlayerMap());
         playerCommands.put("mail", new ActionPlayerMessages());
+        playerCommands.put("set",new ActionPlayerSetSetting());
 
         Iterator<Action> itr = playerCommands.values().iterator();
         
@@ -440,13 +442,16 @@ public abstract class Player extends Thread implements ItemContainer  {
         for (String skill : skillList){
 			broadcast("\t"+skill+"\t"+getSetting(skill)+"\r\n");
 		}
-        System.out.println(this.getSettings());
+        
         broadcast("\r\n============================NOTES==============================\r\n\r\n");
         HashMap<String,String> missions = World.getArea().getMissionMap();
         for (String m : missions.keySet()){
         		if (this.getSetting(m) == 1){
         			this.broadcast(missions.get(m)+"\r\n");
 	    	    }
+        }
+        if (this.getSetting("builder") == 1){
+        	broadcast ("Settings:\r\n"+this.getSettingsAsString()+"\r\n");
         }
         
     }

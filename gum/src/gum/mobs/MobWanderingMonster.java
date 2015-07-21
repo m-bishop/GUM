@@ -2,7 +2,7 @@ package gum.mobs;
 
 import java.util.StringTokenizer;
 
-import gum.Player;
+import gum.User;
 
 public class MobWanderingMonster extends Mob {
 
@@ -58,8 +58,8 @@ public class MobWanderingMonster extends Mob {
 	@Override
 	public void startFight() {
 		// System.out.println(this.getPlayerName()+" Called start fight.\r\n");
-		Player victim = this.getCurrentRoom().getRandomPlayer(this);
-		if (victim != null){
+		User victim = this.getCurrentRoom().getRandomPlayer(this);
+		if (victim != null && !victim.inMenu){
 		      parser.ParseMobCommand(this, "attack " + victim.getPlayerName());
 		  }
 	}

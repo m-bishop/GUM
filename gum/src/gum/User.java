@@ -214,6 +214,7 @@ try {
 
 	public boolean login() { // this may need rewriting...
 		boolean success = true;
+		int retryCount = 0;
 		String response;
 		// String username;
 		this.setPlayerName(null);
@@ -221,6 +222,17 @@ try {
 		this.broadcast(World.getArea().getAreaDescription());
 
 		while (this.getPlayerName() == null && !sock.isClosed()) {
+			retryCount++;
+			if (retryCount >= 3){
+				this.broadcast("Login Failed. Connection Terminated.\r\n");
+				success = false;
+				try {
+					sock.close();
+				} catch (IOException e) {
+					// TODO Add to a system log
+					e.printStackTrace();
+				}
+			} else {
 			System.out.println("called getUserAndPass");
 			response = this.getUserAndPass();
 			if (response != null) {
@@ -256,6 +268,7 @@ try {
 					}
 				}
 			}
+		  }
 		}
 		this.setTimeoutCounter(0);
 		return success;
