@@ -322,6 +322,19 @@ public class ActionAttack extends Action {
 		return result;
 	}
 	
+	public String toString(){
+		String result;
+		
+		result = "\r\n"
+				+ "Attack Base: "+this.getAttackBase() + "\r\n"
+				+ "Attack Roll: "+this.getAttackRoll() + "\r\n"
+				+ "Attack Setting: "+this.getAttackSetting() + "\r\n"
+				+ "Defend Setting: "+this.getDefendSetting() + "\r\n"
+				+ "Attack Messages: "+this.getAttackMessage() + "\r\n";
+		
+		return result;
+	}
+	
 	public String getAttackSetting() {
 		return attackSetting;
 	}
@@ -363,6 +376,7 @@ public class ActionAttack extends Action {
 	public void setAttackMessage(HashMap<Integer, String> attackMessage) {
 		this.attackMessage = attackMessage;
 	}
+	
 
 
 	

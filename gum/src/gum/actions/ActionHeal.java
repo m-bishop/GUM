@@ -300,6 +300,17 @@ public class ActionHeal extends Action {
     	result = result.replace("[item]", item.getItemName());
 		return result;
 	}
+	
+	public String toString(){
+		String result;
+		
+		result = "\r\n"
+				+ "Heal Base: "+this.getHealBase() + "\r\n"
+				+ "Heal Roll: "+this.getHealRoll() + "\r\n"
+				+ "Heal Messages: "+this.getHealMessage();
+
+		return result;
+	}
 
 	public int getHealBase() {
 		return healBase;

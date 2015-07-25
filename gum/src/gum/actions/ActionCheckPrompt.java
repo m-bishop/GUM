@@ -32,23 +32,6 @@ public class ActionCheckPrompt extends Action {
 			this.actionPerformed = false; // done with action. Allow config again. 
 		}
 	}
-
-	public String getSearchString() {
-		return searchString;
-	}
-
-	public void setSearchString(String searchString) {
-		this.searchString = searchString;
-	}
-
-	public String getPromptString() {
-		return promptString;
-	}
-
-	public void setPromptString(String promptString) {
-		this.promptString = promptString;
-	}
-
 	
 	public void configMenu(User u) throws MenuExitException {
 		String menuString = "Configure Check Prompt Item Action:\r\n";
@@ -188,4 +171,30 @@ public class ActionCheckPrompt extends Action {
 		return false;
 	}
 
+	public String toString(){
+		String result;
+		
+		result = "\r\n"
+				+ "Prompt String: "+this.getPromptString() + "\r\n"
+				+ "Search String: "+this.getSearchString() + "\r\n";
+
+		return result;
+	}	
+	
+	public String getSearchString() {
+		return searchString;
+	}
+
+	public void setSearchString(String searchString) {
+		this.searchString = searchString;
+	}
+
+	public String getPromptString() {
+		return promptString;
+	}
+
+	public void setPromptString(String promptString) {
+		this.promptString = promptString;
+	}
+	
 }

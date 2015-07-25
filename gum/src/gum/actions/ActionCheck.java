@@ -500,6 +500,19 @@ public class ActionCheck extends Action {
 		return result;
 	}
 	
+	public String toString(){
+		String result;
+		
+		result = "\r\n"
+				+ "Check Setting: " + this.getCheckSetting() +"\r\n"
+				+ "Condition: " + this.getCondition() + "\r\n"
+				+ "Target: " + this.getTarget() + "\r\n"
+				+ "Target Setting: " + this.getTargetSetting() + "\r\n"
+				+ "Messages: " + this.getMessages() + "\r\n";
+		
+		return result;
+	}
+	
 	public String getCheckSetting() {
 		return checkSetting;
 	}

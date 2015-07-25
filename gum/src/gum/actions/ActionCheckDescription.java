@@ -19,14 +19,6 @@ public class ActionCheckDescription extends Action {
 		this.setActionName("CheckDescription");
 		this.setRange(EffectRange.USER);
 	}
-	
-	public String getSearchString() {
-		return searchString;
-	}
-
-	public void setSearchString(String searchString) {
-		this.searchString = searchString;
-	}
 
 	@Override
 	public void menu(User u) throws MenuExitException {
@@ -111,6 +103,23 @@ public class ActionCheckDescription extends Action {
 	public boolean configActionRange(User u){
 		u.broadcast("Look can only target the user who triggered the action \r\n" );
 		return false;	
+	}
+	
+	public String toString(){
+		String result;
+		
+		result = "\r\n"
+				+ "Search String: "+this.getSearchString() + "\r\n";
+		
+		return result;
+	}
+	
+	public String getSearchString() {
+		return searchString;
+	}
+
+	public void setSearchString(String searchString) {
+		this.searchString = searchString;
 	}
 
 }

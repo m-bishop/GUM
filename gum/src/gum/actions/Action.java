@@ -752,7 +752,7 @@ public abstract class Action implements MenuContainer{
 		String line6 = "\t  "+" %RED "+a5+" %SANE "+"<"+"\r\n";
 		String line7 = "\t     "+" %GREEN "+offset2+a7+" %SANE "+"\r\n" ;
 		
-		return line1+line2+line3+line4+line5+line6+line7;
+		return line1+line2+line3+line4+line5+line6+line7+"\r\n"+this.toString();
 		
 	}
 	
