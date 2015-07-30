@@ -166,7 +166,8 @@ public class ActionCheck extends Action {
 	public void performCheck(Player player, Player target, ItemBase item, ItemBase targetItem,int settingValue,int targetValue){
 		if (this.getCompareResult(settingValue,targetValue)){
 			if (this.getSuccessAction() != null){
-				System.out.println("Actioncheck called success action:"+this.getSuccessAction().getActionName());
+				// System.out.println("Actioncheck called success action:"+this.getSuccessAction().getActionName());
+				player.getCurrentRoom().debugChat("Actioncheck called success action:"+this.getSuccessAction().getActionName());
 				this.getSuccessAction().perform(this.getHeader());
 			}
 		} else {
@@ -363,7 +364,8 @@ public class ActionCheck extends Action {
 			result = settingValue <= target;
 			break;
 		}
-		System.out.println("ActionCheck compared:"+settingValue+" against:"+target+" using operator:"+this.condition+" yeilding result:"+result);
+		// System.out.println("ActionCheck compared:"+settingValue+" against:"+target+" using operator:"+this.condition+" yeilding result:"+result);
+		this.getHeader().getPlayer().getCurrentRoom().debugChat("ActionCheck compared:"+settingValue+" against:"+target+" using operator:"+this.condition+" yeilding result:"+result);
 		return result;
 	}
 	
